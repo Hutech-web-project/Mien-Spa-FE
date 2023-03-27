@@ -1,0 +1,1 @@
+export const selectPhone =  (state) => state.phoneSlice.phone

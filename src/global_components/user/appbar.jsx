@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
-import { Button, Col, Container, Form, Modal, Nav, Navbar, Row, Tab, Tabs } from 'react-bootstrap'
+import {Col, Container, Form, Modal, Nav, Navbar, Row, Tab, Tabs } from 'react-bootstrap'
 import '../../assets/css/user_css/appbar.scss'
 
 const AppBar = (props) => {
@@ -34,13 +34,13 @@ const AppBar = (props) => {
               <Nav className="me-auto nav-collapse-item">
                 <Nav.Link className={activePage === 1 ? 'active' : ''} href="/">Home</Nav.Link>
                 <Nav.Link className={activePage === 2 ? 'active' : ''} href="/shop">Shop</Nav.Link>
-                <Nav.Link className={activePage === 3 ? 'active' : ''} href="/booking">Service</Nav.Link>
+                <Nav.Link className={activePage === 3 ? 'active' : ''} >Service</Nav.Link>
               </Nav >
               <Nav className='nav-collapse-item'>
               {activePage === 2 ?
               <Nav.Link className={activePage === 4 ? 'active' : ''}><FontAwesomeIcon icon={['fas', 'cart-shopping']} /> Cart</Nav.Link>
               :
-              <Nav.Link className={activePage === 5 ? 'active' : ''}><FontAwesomeIcon icon={['fas', 'calendar-alt']} /> Booking</Nav.Link>}
+              <Nav.Link className={activePage === 5 ? 'active' : ''} href="/booking"><FontAwesomeIcon icon={['fas', 'calendar-alt']} /> Booking</Nav.Link>}
                 <Nav className='nav_between'></Nav>
                 <Nav.Link className={activePage === 6 ? 'active' : ''} onClick={handleShow}><FontAwesomeIcon icon={['fa', 'user']} /> Login</Nav.Link>
               </Nav>
