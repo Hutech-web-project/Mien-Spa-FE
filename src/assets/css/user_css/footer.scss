@@ -1,0 +1,111 @@
+/* Footer */
+#footer {
+    padding-top: 60px;
+    background-color: #fd3d9b;
+    .section-title {
+        text-align: center;
+        margin-bottom: 50px;
+        text-transform: uppercase;
+    }
+
+    h5 {
+        padding-left: 10px;
+        border-left: 3px solid #eeeeee;
+        padding-bottom: 6px;
+        margin-bottom: 20px;
+        color: #ffffff;
+    }
+
+    @media only screen and (max-width:767px) {
+        h5 {
+            padding-left: 0;
+            border-left: transparent;
+            padding-bottom: 0px;
+            margin-bottom: 10px;
+        }
+    }
+
+    .nav-list {
+        .nav-item {
+            padding: 3px 0;
+            -webkit-transition: .5s all ease;
+            -moz-transition: .5s all ease;
+            transition: .5s all ease;
+
+            .nav-icon {
+                margin-right: 5px;
+            }
+
+            .nav-icon:hover {
+                font-weight: 700;
+            }
+
+            .nav-link {
+                color: #ffffff;
+                text-decoration: none !important;
+                background-color: transparent;
+                -webkit-text-decoration-skip: objects;
+            }
+
+            .nav-link:hover {
+                color: #eeeeee;
+            }
+
+            .nav-item-image{
+                display: block;
+                margin: 0px auto;             
+                height: auto;
+                max-width: 200px;
+            }
+
+            h4{
+                color: #ffffff;
+                text-align: center;
+            }
+
+            h6{
+                color: #ffffff;
+                text-align: center;
+            }
+
+        }
+
+        .nav-item:hover {
+            padding: 3px 0;
+            margin-left:5px;
+            font-weight:700;
+        }
+    }
+
+    .nav-list-brand{
+        justify-content: center;
+        flex-direction: row;
+        .nav-item-brand{
+            padding: 3px 0;
+            .nav-icon-brand{
+                margin-right: 5px;
+                font-size:large;
+                -webkit-transition: .5s all ease;
+                -moz-transition: .5s all ease;
+                transition: .5s all ease;
+            }
+
+            .nav-icon-brand:hover{
+                font-size:30px;
+	            margin-top:-10px;
+            }
+            .nav-link-brand{
+                color: #ffffff;
+            }
+
+            .nav-link-brand:hover{
+                color:#eeeeee;
+            }
+        }
+    }
+
+    hr{
+        color: #ffffff;
+    }
+}
+
