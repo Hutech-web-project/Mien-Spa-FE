@@ -1,0 +1,56 @@
+body{
+    padding: 10px;
+    background-color: #fff;
+
+    .main-body{
+        margin-bottom: 30px;
+
+        .text-title{
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .shop-cursor{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid gray;
+            background-color: #CCCCFF;
+            .delivered{
+                color: #FF8333;
+                font-weight: bold;
+            }
+    
+            .delivering {
+                color: #6495ED;
+                font-weight: bold;
+            }
+    
+            img {
+                border: 1px solid gray;
+                border-radius: 50%;
+            }
+    
+            .title{
+                font-family: Georgia, 'Times New Roman', Times, serif;
+                font-weight: bold;
+            }
+
+            .price {
+                font-weight: bold;
+            }
+
+            .quanity {
+                font-weight: bold;
+            }
+
+            .status {
+                font-weight: bold;
+            }
+
+        }
+    }
+}
+
+text {
+    font-family: 'Times New Roman', Times, serif;
+}

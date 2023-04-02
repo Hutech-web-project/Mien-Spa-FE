@@ -1,0 +1,38 @@
+body {
+    margin-top: 20px;
+    color: #1a202c;
+    text-align: left;
+    background-color: #e2e8f0;
+}
+
+.main-body {
+    padding: 15px;
+    border: 1px solid gray;
+    margin-bottom: 30px;
+
+    .card {
+        position: relative;
+        border: none;
+
+        .card-body {
+            border-right: 1px solid #e2e8f0;
+
+            .avatar-body {
+
+                img {
+                    border: 1px solid black;
+                    border-radius: 60%;
+                    padding: 5px;
+
+                }
+
+            }
+
+        }
+
+        .card-body-information {
+            padding: 15px;
+
+        }
+    }
+}
