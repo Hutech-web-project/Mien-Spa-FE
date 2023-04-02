@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
-import { Accordion, Col, Container, Form, Pagination, Row } from 'react-bootstrap'
+import { Col, Container, Form, ListGroup, Pagination, Row } from 'react-bootstrap'
 import '../../../../assets/css/user_css/shop_page/shop_body.scss'
 const ShopBody = () => {
   const _handleKeyDown = (e) => {
@@ -14,13 +14,13 @@ const ShopBody = () => {
       <section className='shop'>
         <Container>
           <Row>
-            <Col md={3} sm={12} xs={12}>
+            <Col md={3}>
               <div className='shop-siderbar'>
                 <div className="shop-sidebar-search">
                   <Form className='form' as={Col} >
                     <Form.Group>
                       <Col className='form-item'>
-                        <Form.Control className='form-item-input' type="text" placeholder="Enter email" onError={true} onKeyDown={_handleKeyDown} />
+                        <Form.Control className='form-item-input' type="text" placeholder="Enter email" onKeyDown={_handleKeyDown} />
                         <FontAwesomeIcon className='form-item-icon' icon={['fa', 'search']} />
                       </Col>
                     </Form.Group>
@@ -29,34 +29,32 @@ const ShopBody = () => {
                 <div className="shop-sidebar-accordion">
                   <div className="accordion" id="accordionExample">
                     <div className="card">
-                      <Accordion defaultActiveKey={['0']} alwaysOpen>
-                        <Accordion.Item eventKey="0">
-                          <Accordion.Header>Categories</Accordion.Header>
-                          <Accordion.Body>
-                            <div className="card-body">
-                              <div className="shop__sidebar__categories">
-                                <ul className="nice-scroll">
-                                  <li><a href="!#">Men (20)</a></li>
-                                  <li><a href="!#">Women (20)</a></li>
-                                  <li><a href="!#">Bags (20)</a></li>
-                                  <li><a href="!#">Clothing (20)</a></li>
-                                  <li><a href="!#">Shoes (20)</a></li>
-                                  <li><a href="!#">Accessories (20)</a></li>
-                                  <li><a href="!#">Kids (20)</a></li>
-                                  <li><a href="!#">Kids (20)</a></li>
-                                  <li><a href="!#">Kids (20)</a></li>
-                                </ul>
-                              </div>
-                            </div>
-                          </Accordion.Body>
-                        </Accordion.Item>
-                      </Accordion>
+                      <div className="card-heading">
+                        <a data-toggle="collapse" data-target="#collapseOne">Categories</a>
+                      </div>
+                      <div id="collapseOne" className="collapse show" data-parent="#accordionExample">
+                        <div className="card-body">
+                          <div className="shop__sidebar__categories">
+                            <ul className="nice-scroll">
+                              <li><a href="#">Men (20)</a></li>
+                              <li><a href="#">Women (20)</a></li>
+                              <li><a href="#">Bags (20)</a></li>
+                              <li><a href="#">Clothing (20)</a></li>
+                              <li><a href="#">Shoes (20)</a></li>
+                              <li><a href="#">Accessories (20)</a></li>
+                              <li><a href="#">Kids (20)</a></li>
+                              <li><a href="#">Kids (20)</a></li>
+                              <li><a href="#">Kids (20)</a></li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </Col>
-            <Col md={9} sm={12} xs={12}>
+            <Col md={9} >
               <Row className='demo' >
                 <Col sx={12} md={'auto'} sm={'auto'}>
                   <Col className='product-grid2'>

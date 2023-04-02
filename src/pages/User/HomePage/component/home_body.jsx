@@ -7,12 +7,11 @@ import HomeTeamOfExperts from './home_team_of_experts'
 const HomeBody = () => {
   return (
     <>
-      <section className='home'>
-        <HomeFacility />
-        <HomeTeamOfExperts />
-        <HomeCustomerTreatment />
-        <HomeFeedback />
-      </section>
+    <HomeFacility/>
+    <HomeTeamOfExperts/>
+    <HomeCustomerTreatment/>
+    <HomeFeedback/>
+    
     </>
   )
 }
