@@ -10,7 +10,6 @@ import {
 //Import các icon mà bạn muốn sử dụng trong từng gói
 import {
   faAngleDoubleRight,
-  faArrowLeft,
   faCalendarAlt,
   faCartShopping,
   faCircle,
@@ -24,7 +23,6 @@ import {
   faSearch,
   faTimes,
   faUser,
-  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 
 //Add các icon đã được import vào trong thư viện của bạn
@@ -46,7 +44,5 @@ library.add(
   faCalendarAlt,
   faEye,
   faHeart,
-  faTimes,
-  faArrowLeft,
-  faUsers
+  faTimes
 );
