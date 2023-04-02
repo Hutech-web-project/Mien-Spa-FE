@@ -1,16 +1,15 @@
 .shop {
 
     .form {
-        margin: 20px 0px;
-        border: 1px solid;
-        border-radius: 60px;
+        margin: 20px 0px 20px 20px;
+        border: 1px solid #b7b7b7;
+        // border-radius: 60px;
 
         .form-item {
             display: flex;
 
             .form-item-input {
-                border: none;
-                border-radius: 60px;
+                border: none;               
                 outline: none;
             }
 
@@ -28,7 +27,7 @@
 
     .shop-siderbar {
         padding-right: 20px;
-        padding-top: 20px;
+        padding-top: 25px;
         padding-bottom: 20px;
 
         .shop-sidebar-search {
@@ -40,6 +39,46 @@
                 border: none;
                 border-radius: 0;
                 margin-bottom: 25px;
+                
+                .accordion{
+                    .accordion-item{
+                        border: none;
+                        border-radius: 0;
+
+                        .accordion-header{
+                            cursor: pointer;
+
+                            .accordion-button{
+                                color: #111111;
+                                font-size: 16px;
+                                font-weight: 700;
+                                text-transform: uppercase;
+                                display: block;
+                            }
+            
+                            .accordion-button:after,>.accordion-button.active[aria-expanded=false]:after {
+                                font-family: "FontAwesome";
+                                font-size: 24px;
+                                font-weight: 700;
+                                color: #111111;
+                                position: absolute;
+                                right: 0;
+                            }
+                        }
+                        .accordion-header,.accordion-button[aria-expanded=true]{
+                          border: none;
+                          box-shadow: none;
+                          background-color: #fff;
+                       }
+
+                       .accordion-header,.accordion-button[aria-expanded=false]{
+                        border: none;
+                        box-shadow: none;
+                        background-color: #fff;
+                     }
+                    }
+                }
+               
             }
 
             .card:last-child {
@@ -52,8 +91,7 @@
             }
 
             .card-body {
-                padding: 0;
-                padding-top: 10px;
+                padding: 0;               
                 padding-bottom: 20px;
                 border-bottom: 1px solid #e5e5e5;
             }
@@ -70,7 +108,6 @@
                 }
 
                 a:after,>a.active[aria-expanded=false]:after {
-                    content: ">";
                     font-family: "FontAwesome";
                     font-size: 24px;
                     font-weight: 700;
@@ -84,7 +121,6 @@
             
             .card-heading.active{
                 a:after {
-                    content: ">";
                     font-family: "FontAwesome";
                     font-size: 24px;
                     font-weight: 700;
