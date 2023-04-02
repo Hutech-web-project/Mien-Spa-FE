@@ -1,0 +1,34 @@
+.booking-time{
+    .picker-date{
+        .Mui-selected{
+            background-color: #fd3d9b !important;
+            color: #ffff !important;
+        }
+
+        
+    }
+    .picker-time{
+        margin-left: 10px;
+        margin-top: 20px;
+
+        .btn-time-disavled{
+            margin-bottom: 20px;
+        }
+        
+        .btn-time{
+            border: 1px solid #fd3d9b !important;
+            color: #fd3d9b;
+            margin-bottom: 20px;
+        }
+
+        .btn-time:hover{
+            background-color: #fd3d9b;
+            color: #ffff;
+        }
+
+        .active{
+            background-color: #fd3d9b;
+            color: #ffff;
+        }
+    }
+}

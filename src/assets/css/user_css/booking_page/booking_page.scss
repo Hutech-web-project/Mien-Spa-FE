@@ -3,4 +3,23 @@
     padding: 20px;
     margin-top: 20px;
     margin-bottom: 20px;
+
+    .btn-left{
+
+        background-color: #fd3d9b;
+        color: #ffff;
+        border: 1px solid #fd3d9b;
+        
+    }
+
+    .btn-left:hover{
+        background-color:#f6b26b ;
+        border: 1px solid #f6b26b;
+        color: #ffff;
+        
+    }
+
+    .btn-right{
+        color: #fd3d9b;
+    }
 }

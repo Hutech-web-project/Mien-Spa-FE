@@ -5,14 +5,17 @@ import ShopIndex from "../pages/User/ShopPage/shop_index";
   {
     path: "/",
     element: <HomeIndex />,
+    children:[]
   },
   {
     path: "/shop",
     element: <ShopIndex />,
+    children:[]
   },
   {
     path: "/booking",
     element: <BookingIndex />,
+    children:[]
   },
 ];
 
