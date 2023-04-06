@@ -1,5 +1,5 @@
 import { Col, Row } from 'react-bootstrap'
-import "../../../../assets/css/user_css/cart_page/cart_body.scss"
+import "../../../../assets/scss/user_css/cart_page/cart_body.scss"
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 

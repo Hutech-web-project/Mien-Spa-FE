@@ -1,6 +1,6 @@
 import React from 'react'
 import { Col, Row } from 'react-bootstrap'
-import "../../../../assets/css/user_css/user_page/user_page.scss"
+import "../../../../assets/scss/user_css/user_page/user_page.scss"
 const UserProfile = () => {
     return (
         <>
