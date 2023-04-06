@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card, CardGroup, Col, Container, Row } from 'react-bootstrap'
-import '../../../../assets/css/user_css/home_page/facilities.scss'
+import '../../../../assets/scss/user_css/home_page/facilities.scss'
 
 function HomeFacility() {
     return (

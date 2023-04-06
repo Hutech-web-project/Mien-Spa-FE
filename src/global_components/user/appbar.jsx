@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useState } from 'react'
 import {Col, Container, Form, Modal, Nav, Navbar, Row, Tab, Tabs } from 'react-bootstrap'
-import '../../assets/css/user_css/appbar.scss'
+import '../../assets/scss/user_css/appbar.scss'
 
 const AppBar = (props) => {
   const [show, setShow] = useState(false);

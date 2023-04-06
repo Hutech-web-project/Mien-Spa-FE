@@ -1,6 +1,6 @@
 import React from 'react'
 import { Card, CardGroup, Carousel, Col, Container, Image, Row } from 'react-bootstrap'
-import '../../../../assets/css/user_css/home_page/customer_feedback.scss'
+import '../../../../assets/scss/user_css/home_page/customer_feedback.scss'
 
 const HomeFeedback = () => {
     return (

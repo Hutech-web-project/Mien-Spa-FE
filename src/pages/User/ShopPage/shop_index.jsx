@@ -3,7 +3,7 @@ import { Col } from 'react-bootstrap'
 import AppBar from '../../../global_components/user/appbar'
 import Footer from '../../../global_components/user/footer'
 import ShopBody from './components/shop_body'
-import '../../../assets/css/user_css/pageIndex.scss'
+import '../../../assets/scss/user_css/pageIndex.scss'
 const ShopIndex = () => {
     return (
         <>

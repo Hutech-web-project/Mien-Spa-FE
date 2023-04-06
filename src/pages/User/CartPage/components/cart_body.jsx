@@ -1,6 +1,6 @@
 import React from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
-import "../../../../assets/css/user_css/cart_page/cart_body.scss"
+import "../../../../assets/scss/user_css/cart_page/cart_body.scss"
 import CartShoppingCart from './cart_shoppingCart'
 import CartSummary from './cart_summary'
 

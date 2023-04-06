@@ -1,5 +1,5 @@
 import React from 'react'
-import "../../../../assets/css/user_css/user_page/orders.scss"
+import "../../../../assets/scss/user_css/user_page/orders.scss"
 import { Col, Row } from 'react-bootstrap'
 const Orders = () => {
     return (

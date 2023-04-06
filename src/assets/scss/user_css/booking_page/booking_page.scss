@@ -1,0 +1,18 @@
+.booking{
+    border: 1px solid #495057;
+    padding: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    
+    .btn-next{
+        background-color: #fd3d9b;
+    }
+
+    .btn-next:hover{
+        background-color: #fd9e7b;
+    }
+
+    .btn-back{
+        color: #fd3d9b;
+    }
+}

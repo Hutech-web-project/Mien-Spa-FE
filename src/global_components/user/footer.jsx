@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react'
 import { Col, Container, Image, Nav, Row } from 'react-bootstrap';
-import '../../assets/css/user_css/footer.scss';
+import '../../assets/scss/user_css/footer.scss';
 
 const Footer = () => {
     return (

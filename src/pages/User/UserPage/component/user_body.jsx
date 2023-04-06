@@ -3,7 +3,7 @@ import { Col, Tab, Row, Nav } from 'react-bootstrap'
 import UserProfile from './user_profile'
 import ChangePassword from './change_password'
 import Orders from './orders'
-import "../../../../assets/css/user_css/user_page/user_body.scss"
+import "../../../../assets/scss/user_css/user_page/user_body.scss"
 
 const UserBody = () => {
 

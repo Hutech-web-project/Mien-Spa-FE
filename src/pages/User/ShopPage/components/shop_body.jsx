@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { Accordion, Col, Container, Form, Pagination, Row } from 'react-bootstrap'
-import '../../../../assets/css/user_css/shop_page/shop_body.scss'
+import '../../../../assets/scss/user_css/shop_page/shop_body.scss'
 const ShopBody = () => {
   const _handleKeyDown = (e) => {
     if (e.key === 'Enter') {
