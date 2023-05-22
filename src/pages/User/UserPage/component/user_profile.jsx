@@ -30,12 +30,31 @@ const UserProfile = () => {
                                 <div className="card-body-information">
                                     <Row>
                                         <Col sm={3}>
+                                            <h6 className="mb-0">User Name</h6>
+                                        </Col>
+                                        <Col sm={9} className="text-secondary">
+                                            Vip 501
+                                        </Col>
+                                    </Row>
+                                    <hr/>
+                                    <Row>
+                                        <Col sm={3}>
                                             <h6 className="mb-0">Full Name</h6>
                                         </Col>
                                         <Col sm={9} className="text-secondary">
                                             Kenneth Valdez
                                         </Col>
                                     </Row>
+                                    <hr/>
+                                    <Row>
+                                        <Col sm={3}>
+                                            <h6 className="mb-0">Birthday</h6>
+                                        </Col>
+                                        <Col sm={9} className="text-secondary">
+                                            01/01/2000
+                                        </Col>
+                                    </Row>
+                                    
                                     <hr />
                                     <Row>
                                         <Col sm={3}>
@@ -75,8 +94,8 @@ const UserProfile = () => {
                                     </Row>
                                     <hr />
                                     <Row>
-                                        <Col sm={12}>
-                                            <a className="btn btn-info" href='/edit-profile'>Edit Profile</a>
+                                        <Col sm={12} className='edit-profile'>
+                                            <a  href='/edit_profile'>Edit Profile</a>
                                         </Col>
                                     </Row>
                                 </div>

@@ -1,0 +1,45 @@
+.image {
+    a{
+        background-color: #fd3d9b;
+        color: #fff;
+        position: relative;
+        display: inline-block;
+        padding: 5px 15px;
+        text-decoration: none;
+        font-size: 24px;
+        overflow: hidden;
+        transition: 0.5s;
+        margin-top: 30px;
+      }
+    
+      a:hover {
+        color: #255784;
+        background-color: #ff9c33;
+        box-shadow: 0 0 10px #ff9c33, 0 0 40px #ff9c33, 0 0 10px #ff9c33;
+        transition-delay: 0.2s;
+      }
+}
+
+
+.save {
+  a {
+    background-color: #fd3d9b;
+    color: #fff;
+    border: 1px solid #fd3d9b;
+    position: relative;
+    display: inline-block;
+    padding: 5px 15px;
+    text-decoration: none;
+    font-size: 24px;
+    overflow: hidden;
+    transition: 0.5s;
+    margin-top: 30px;
+  }
+
+  a:hover {
+    color: #255784;
+    background-color: #ff9c33;
+    box-shadow: 0 0 10px #ff9c33, 0 0 40px #ff9c33, 0 0 10px #ff9c33;
+    transition-delay: 0.2s;
+  }
+}
