@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from 'react'
+
 import { Col, Tab, Row, Nav } from 'react-bootstrap'
 import UserProfile from './user_profile'
 import ChangePassword from './change_password'
 import Orders from './orders'
 import "../../../../assets/scss/user_css/user_page/user_body.scss"
+import { useState } from 'react'
 
 const UserBody = () => {
-
+    const [activeKey, setActiveKey] = useState('first');
+    const handleSelect = (key) => {
+        console.log('Selected key:', key);
+        setActiveKey(key);
+    }
     return (
         <>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="first">
+            <Tab.Container id="left-tabs-example" activeKey={activeKey} onSelect={handleSelect}>
                 <Row>
                     <Col sm={3} className='tabs'>
                         <hr />

@@ -12,7 +12,7 @@ const Orders = () => {
                 <hr />
                 <Row className='shop-cursor'>
                     <Col md={2} className='img'>
-                        <img src="http://localhost:3000/static/media/bongtaytrang_ipek.d824196cac408923b701.jpg" alt="Image" width="150px" height="150px" />
+                        <img src="http://localhost:3000/static/media/bongtaytrang_ipek.d824196cac408923b701.jpg" alt="ProductImage" width="150px" height="150px" />
                     </Col>
                     <Col className='title'>
                         Women's Top design
@@ -33,7 +33,7 @@ const Orders = () => {
                 <hr />
                 <Row className='shop-cursor'>
                     <Col md={2} className='img'>
-                        <img src="http://localhost:3000/static/media/bongtaytrang_simple.51fe50f482cb8686048c.jpg" alt="Image" width="150px" height="150px" />
+                        <img src="http://localhost:3000/static/media/bongtaytrang_simple.51fe50f482cb8686048c.jpg" alt="ProductImage" width="150px" height="150px" />
                     </Col>
                     <Col className='title'>
                         Men's Top design
@@ -54,7 +54,7 @@ const Orders = () => {
                 <hr />
                 <Row className='shop-cursor'>
                     <Col md={2} className='img'>
-                        <img src="http://localhost:3000/static/media/bongtaytrang_simple.51fe50f482cb8686048c.jpg" alt="Image" width="150px" height="150px" />
+                        <img src="http://localhost:3000/static/media/bongtaytrang_simple.51fe50f482cb8686048c.jpg" alt="ProductImage" width="150px" height="150px" />
                     </Col>
                     <Col className='title'>
                         Kid's Top design
