@@ -5,20 +5,20 @@ import { Col, Form } from 'react-bootstrap';
 import { selectPhone } from '../../../../redux/Booking/booking_page_selecter';
 import { validate } from 'validate.js';
 import { BookingPagevalidate } from '../../../../util/validate';
+import { successPhone } from '../../../../redux/Booking/booking_page_reducer';
+import { errorPhone } from '../../../../redux/Booking/booking_page_reducer';
 
 const BookingPhone = () => {
     const dispatch = useDispatch();
-    const [phone, setPhone] = useState(useSelector(selectPhone));
+    const phone = useSelector(selectPhone);
     // validation
     const [validation, setValidation] = useState({
         touched: {},
         errors: {},
         isvalid: false,
     });
-    const [count,setCount] = useState(0);
     useEffect(() => {
         const errors = validate.validate({ phone: phone }, BookingPagevalidate);
-        console.log(errors)
         setValidation((pre) => ({
             ...pre,
             isvalid: errors ? false : true,
@@ -31,40 +31,19 @@ const BookingPhone = () => {
     };
 
     const handleChange = (e) =>  { 
-        setPhone(e.target.value);
-        if(count !== 0){
-            setValidation((pre) => ({
-                ...pre,
-                touched: {
-                    ...pre.touched,
-                    [e.target.name]: true,
-                },
-            }));
-            if(e.target.value !== "" && hasError("phone")){
-                dispatch(addPhone(e.target.value));
-            }else{
-                dispatch(clearPhone())
-            }
+        dispatch(addPhone(e.target.value));
+        setValidation((pre) => ({
+            ...pre,
+            touched: {
+                ...pre.touched,
+                [e.target.name]: true,
+            },
+        }));
+        const check = validate.validate({ phone: phone }, BookingPagevalidate)? true : false;
+        if(check === true){
+            dispatch(successPhone());
         }else{
-            setValidation((pre) => ({
-                ...pre,
-                touched: {
-                    ...pre.touched,
-                    [e.target.name]: false,
-                },
-            }));
-            if(e.target.value !== "" && hasError("phone")){
-                dispatch(addPhone(e.target.value));
-            }else{
-                dispatch(clearPhone())
-            }
-        }
-        setCount(1);
-        
-        if(e.target.value !== "" && hasError("phone")){
-            dispatch(addPhone(e.target.value));
-        }else{
-            dispatch(clearPhone())
+            dispatch(errorPhone())
         }
     };
 
@@ -77,7 +56,6 @@ const BookingPhone = () => {
                     type="text"                   
                     placeholder="Enter phone number......."
                     onChange={handleChange}
-                    onClick={handleChange}        
                     isInvalid={hasError("phone")}
                 />
                 <Form.Control.Feedback type="invalid">

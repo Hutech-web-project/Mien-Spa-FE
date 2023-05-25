@@ -5,7 +5,7 @@ import { Container } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import '../../../../assets/scss/user_css/booking_page/booking_page.scss';
 import BookingTime from './booking_time';
-import { selectDate, selectPhone, selectTime } from '../../../../redux/Booking/booking_page_selecter';
+import { selectCheckPhone, selectDate, selectTime } from '../../../../redux/Booking/booking_page_selecter';
 import BookingPhone from './booking_phone';
 
 const steps = [
@@ -22,14 +22,13 @@ const steps = [
 
 
 const BookingBody = () => {
-    const [valueSearch, setValueSearch] = useState(false);
+    // const [valueSearch, setValueSearch] = useState(false);
     const [activeStep, setActiveStep] = useState(0);
-    const timeSelect = useSelector(selectTime);
-    const dateSelect = useSelector(selectDate);
-    const phoneInput = useSelector(selectPhone);
-    console.log(phoneInput)
+    // const timeSelect = useSelector(selectTime);
+    // const dateSelect = useSelector(selectDate);
+    const phoneInput = useSelector(selectCheckPhone);
     const handleNext = (id) => {
-        if(id ===0 && phoneInput !== ""){
+        if(id ===0 && phoneInput === true){
             setActiveStep((prevActiveStep) => prevActiveStep + 1);
         }else if(id ===1 && phoneInput !== ""){
 
@@ -38,7 +37,6 @@ const BookingBody = () => {
         }else{
             return;
         }
-        // setActiveStep((prevActiveStep) => prevActiveStep + 1);
     };
 
     const handleBack = () => {
