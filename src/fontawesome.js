@@ -14,6 +14,7 @@ import {
   faCartShopping,
   faCircle,
   faCode,
+  faDashboard,
   faEnvelope,
   faEye,
   faHeart,
@@ -44,5 +45,6 @@ library.add(
   faCalendarAlt,
   faEye,
   faHeart,
-  faTimes
+  faTimes,
+  faDashboard
 );

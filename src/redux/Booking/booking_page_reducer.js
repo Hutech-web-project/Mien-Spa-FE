@@ -1,10 +1,11 @@
-import { createSlice, isAnyOf } from "@reduxjs/toolkit";
+import { createSlice, } from "@reduxjs/toolkit";
 
 
 const initialState = {
     phone: "",
     date: "",
     time: "",
+    checkPhone: false,
     idTimeActive: "",
     isLoading: false,
     error: "",
@@ -47,6 +48,12 @@ export const BookingPage = createSlice({
         clearIdTimeActive: (state, action) => {
             state.idTimeActive = "";
         },
+        successPhone:(state)=>{
+            state.checkPhone = true;
+        },
+        errorPhone:(state)=>{
+            state.checkPhone = false;
+        }
 
     },
     //use pai
@@ -57,7 +64,14 @@ export const BookingPage = createSlice({
 export const {
     addPhone,
     clearPhone,
-    addDate, clearDate, addTime, clearTime, addIdTimeActive, clearIdTimeActive
+    addDate,
+    clearDate, 
+    addTime, 
+    clearTime, 
+    addIdTimeActive, 
+    clearIdTimeActive,
+    successPhone,
+    errorPhone,
 } = BookingPage.actions;
 
 export default BookingPage.reducer;

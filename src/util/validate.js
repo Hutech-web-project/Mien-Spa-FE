@@ -52,11 +52,7 @@ export const schemaUser = {
         },
 
     },
-
-
-
 };
-
 export const schemaInforOrder = {
     address: {
         presence: {
@@ -156,20 +152,19 @@ export const schemaRegister = {
         },
     },
 };
-
-export const schemaLogin = {
-    password: {
-        presence: {
-            allowEmpty: false,
-            message: "^Mật khẩu không được trống",
-        },
-    },
+export const LoginPageValidate = {
     email: {
         presence: {
             allowEmpty: false,
-            message: "^Email không được trống",
+            message: "^Email can not be left blank",
         }
     },
+    password: {
+        presence: {
+            allowEmpty: false,
+            message: "^Password can not be left blank",
+        },
+    },   
 };
 
 export const schemaPassword = {
@@ -224,7 +219,6 @@ export const schemaChangePassword = {
         },
     },
 }
-
 export const schemaProduct = {
     proName: {
         presence: {
@@ -294,8 +288,6 @@ export const schemaProduct = {
 
 
 };
-
-
 export const schemaService = {
     seName: {
         presence: {
@@ -357,23 +349,21 @@ export const schemaService = {
 
 
 };
-
-
-export const shemaCate = {
+export const CategoriesPageValidate = {
     cateName: {
         presence: {
             allowEmpty: false,
-            message: "^Tên thể loại không được trống",
+            message: "^Category name cannot be left blank",
         },
         length: {
             minimum: 5,
             maximum: 15,
-            message: "^Tên thể loại không được quá ngắn hoặc quá dài",
+            message: "^Category names can't be too short or too long",
         },
         format: {
             pattern: validName,
             flags: "i",
-            message: "^Tên thể loại không bao gồm số hoặc kí tự đặc biệt",
+            message: "^Category names do not include numbers or special characters",
         },
     },
 

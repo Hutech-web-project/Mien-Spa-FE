@@ -1,0 +1,28 @@
+.category {
+    .category-top{
+        margin-bottom: 15px;
+        .add {
+          margin-top: 5px;
+        }
+        .category-search{
+            margin-right: 10px;
+            margin-top: 5px;
+            .search{
+             min-width: 450px !important;
+            }
+        }
+        @media (min-width: 992px){
+            .category-search{
+                float: right;
+            }
+        }
+    }
+    .category-center{
+        .btn-action{
+            width: 80px;
+            margin-right: 20px;
+        }
+    }
+
+    
+}
