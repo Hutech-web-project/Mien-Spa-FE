@@ -18,7 +18,7 @@ export const postCategories = createAsyncThunk(
     async (data,{rejectWithValue}) => {
         try {
           const response = await api.post("/api/Category", data)
-          return response.data
+          return response.status
         } catch (err) {
           return rejectWithValue(err.message);
         }
@@ -28,9 +28,21 @@ export const postCategories = createAsyncThunk(
     'put/category',
     async (data,{rejectWithValue}) => {
         try {
-          const response = await api.put(`/api/Category/${data.cateId}`, data)
+          const response = await api.put(`/api/Category`, data)
            
-          return response.data
+          return response.status
+        } catch (err) {
+          return rejectWithValue(err.message);
+        }
+      }
+  );
+
+  export const deleteCategories = createAsyncThunk(
+    'delete/category',
+    async (data,{rejectWithValue}) => {
+        try {
+          const response = await api.delete(`/api/Category/${data}`)  
+          return response.status
         } catch (err) {
           return rejectWithValue(err.message);
         }

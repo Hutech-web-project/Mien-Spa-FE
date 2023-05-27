@@ -1,5 +1,5 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit"
-import { getCategories, postCategories, putCategories } from "./category_page_thunk"
+import { deleteCategories, getCategories, postCategories, putCategories } from "./category_page_thunk"
 
 const initialState = {
     categories: [],
@@ -21,10 +21,10 @@ const CategoriesPage = createSlice({
         builder.addMatcher(isAnyOf(postCategories.fulfilled, putCategories.fulfilled), (state,) => {
             state.isLoading = false;
         })
-        builder.addMatcher(isAnyOf(getCategories.pending, postCategories.pending, putCategories.pending), (state,) => {
+        builder.addMatcher(isAnyOf(getCategories.pending, postCategories.pending, putCategories.pending,deleteCategories.pending), (state,) => {
             state.isLoading = true;
         })
-        builder.addMatcher(isAnyOf(getCategories.rejected, postCategories.rejected, putCategories.rejected), (state, action) => {
+        builder.addMatcher(isAnyOf(getCategories.rejected, postCategories.rejected, putCategories.rejected,deleteCategories.rejected), (state, action) => {
             state.isLoading = false;
             state.error = action.payload
         })
