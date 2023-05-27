@@ -4,9 +4,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./fontawesome.js"
 import './App.css';
 import routes from './routes/routes';
+import { useEffect } from 'react';
 
 
 function App() {
+
   return (
     
     <BrowserRouter>

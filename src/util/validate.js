@@ -357,7 +357,7 @@ export const CategoriesPageValidate = {
         },
         length: {
             minimum: 5,
-            maximum: 15,
+            maximum: 30,
             message: "^Category names can't be too short or too long",
         },
         format: {

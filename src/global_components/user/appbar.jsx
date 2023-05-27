@@ -55,7 +55,6 @@ const AppBar = (props) => {
     dispatch(turnOffError())
   }, [])
   const hasError = (field) => {
-    console.log(validation.touched[field])
     return validation.touched[field] && validation.errors[field] ? true : false;
   };
 

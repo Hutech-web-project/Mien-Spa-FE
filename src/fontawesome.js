@@ -16,6 +16,7 @@ import {
   faCode,
   faDashboard,
   faEnvelope,
+  faExclamationTriangle,
   faEye,
   faHeart,
   faHighlighter,
@@ -46,5 +47,6 @@ library.add(
   faEye,
   faHeart,
   faTimes,
-  faDashboard
+  faDashboard,
+  faExclamationTriangle
 );
