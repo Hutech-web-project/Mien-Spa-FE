@@ -1,18 +1,16 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { fetchUserById, login } from "./auth_page_thunk";
+import {login } from "./auth_page_thunk";
 
 
 const initialState = {
-    user: null,
-    listUser: [],
-    listRole: [],
+    auth: null,
     isLoading: false,
     error: false,
     alertSuccess: false,
 };
 
-export const UserPage = createSlice({
-    name: "user",
+export const AuthPage = createSlice({
+    name: "auth",
     initialState,
     reducers: {
         logout: (state, action) => {
@@ -31,36 +29,29 @@ export const UserPage = createSlice({
         builder.addCase(login.rejected, (state, action) => {
             state.isLoading = false;
             state.error = true;
+            state.auth  = state.payload;
         });
+
         builder.addMatcher(
-            isAnyOf(login.fulfilled, fetchUserById.fulfilled),
+            isAnyOf(login.fulfilled),
             (state, action) => {
                 state.isLoading = false;
-                state.user = action.payload;
+                state.auth = action.payload;
                 state.error = false;
             }
         );
         builder.addMatcher(
             isAnyOf(
-              login.pending,
-            //   register.pending,
-              fetchUserById.pending,
-            //   fetchAllUser.pending,
-            //   updateUser.pending,
-            //   updatePassword.pending,
-            //   fetchUserByIdAdmin.pending,
-            //   fetchAllRole.pending,
-            //   postRole.pending,
-            //   changePassword.pending
-            ),
-            (state, action) => {
-              state.isLoading = true;
+                login.pending,
+            ),(state ) => {
+                state.isLoading = true;
             }
-          );
-    }
+        );
+
+    },
 });
 
-export const { logout, turnOffRegisterSuccess, turnOffError } =
-    UserPage.actions;
+export const { logout, turnOffRegisterSuccess, turnOffError} =
+AuthPage.actions;
 
-export default UserPage.reducer;
+export default AuthPage.reducer;

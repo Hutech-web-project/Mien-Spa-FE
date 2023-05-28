@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import { Col, Row } from 'react-bootstrap'
+import { Button, Col, Row } from 'react-bootstrap'
 import "../../../../assets/scss/user_css/user_page/change_password.scss"
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import validate from 'validate.js';
 import { schemaChangePassword } from "../../../../util/validate"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ChangePassword = () => {
     const [showPassword1, setShowPassword1] = useState(false);
@@ -79,7 +78,7 @@ const ChangePassword = () => {
                                             <input type={showPassword1 ? 'text' : 'password'} className="form-control" value={currentPassword} onChange={handleCurrentPasswordChange} />
                                         </div>
 
-                                        <span className='icon' onClick={toggleShowPassword1}>{showPassword1 ? <VisibilityOffIcon /> : <VisibilityIcon />}</span>
+                                        <span className='icon' onClick={toggleShowPassword1}>{showPassword1 ?<FontAwesomeIcon icon={['fa', 'eye']} /> : <FontAwesomeIcon icon={['fa', 'eye-slash']} />}</span>
                                     </div>
                                 </Col>
                                 <Col md={4} className='fp'>
@@ -100,7 +99,7 @@ const ChangePassword = () => {
                                         <input type={showPassword2 ? 'text' : 'password'} className="form-control" value={newPassword} onChange={handleNewPasswordChange} />
                                     </div>
 
-                                    <span className='icon' onClick={toggleShowPassword2}>{showPassword2 ? <VisibilityOffIcon /> : <VisibilityIcon />}</span>
+                                    <span className='icon' onClick={toggleShowPassword2}>{showPassword2 ? <FontAwesomeIcon icon={['fa', 'eye']} /> : <FontAwesomeIcon icon={['fa', 'eye-slash']} />}</span>
                                 </div>
                             </div>
                             <Row className="error-tag">
@@ -120,7 +119,7 @@ const ChangePassword = () => {
                                     <div className="form-group pass_show">
                                         <input type={showPassword3 ? 'text' : 'password'} className="form-control" value={confirmPassword} onChange={handleConfirmPasswordChange} />
                                     </div>
-                                    <span className='icon' onClick={toggleShowPassword3}>{showPassword3 ? <VisibilityOffIcon /> : <VisibilityIcon />}</span>
+                                    <span className='icon' onClick={toggleShowPassword3}>{showPassword3 ? <FontAwesomeIcon icon={['fa', 'eye']} /> : <FontAwesomeIcon icon={['fa', 'eye-slash']} />}</span>
                                 </div>
                                 <Row className="error-tag">
                                     {errors.confirmPassword && (
@@ -136,7 +135,7 @@ const ChangePassword = () => {
 
                         <Row>
                             <div className='sub'>
-                                <a href="">Change password</a>
+                                <Button variant="primary">Change Password</Button>
                             </div>
                         </Row>
                     </form>

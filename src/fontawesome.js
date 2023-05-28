@@ -18,11 +18,13 @@ import {
   faEnvelope,
   faExclamationTriangle,
   faEye,
+  faEyeSlash,
   faHeart,
   faHighlighter,
   faMapMarkerAlt,
   faPhone,
   faSearch,
+  faSignOut,
   faTimes,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
@@ -48,5 +50,8 @@ library.add(
   faHeart,
   faTimes,
   faDashboard,
-  faExclamationTriangle
+  faExclamationTriangle,
+  faEye,
+  faEyeSlash,
+  faSignOut,
 );

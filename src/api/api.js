@@ -27,9 +27,9 @@ const accessToken = (previousAPI) => {
             return api.request(previousAPI);
         } catch (error) {
             throw error;
-        }
-        return innerAccessToken;
+        }     
     }
+    return innerAccessToken;
 }
 
 api.interceptors.request.use(

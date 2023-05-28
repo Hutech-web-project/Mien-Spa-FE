@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
-import { Alert, Col, Container, Form, Modal, Nav, Navbar, Row, Spinner, Tab, Tabs } from 'react-bootstrap'
+import { Alert, Col, Container, Form, Modal, Nav, NavDropdown, Navbar, Row, Spinner, Tab, Tabs } from 'react-bootstrap'
 import '../../assets/scss/user_css/appbar.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { validate } from 'validate.js'
 import { LoginPageValidate } from '../../util/validate'
 import { login } from "../../redux/Auth/auth_page_thunk";
-import { selectError, selectLoading } from '../../redux/Auth/auth_page_selecter'
+import { selectError, selectLoading, selectAuth } from '../../redux/Auth/auth_page_selecter'
 import { turnOffError } from '../../redux/Auth/auth_page_reducer'
 
 const AppBar = (props) => {
@@ -15,6 +15,7 @@ const AppBar = (props) => {
   const navigate = useNavigate();
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
+  const [checkOut,setCheckOut]  = useState(false);
   //input datalogin
   const [dataLogin, setDataLogin] = useState({
     email: "",
@@ -29,6 +30,9 @@ const AppBar = (props) => {
   });
   const [show, setShow] = useState(false);
   const [activePage, setActivePage] = useState(props.id);
+
+  const auth = useSelector(selectAuth);
+
   const handleShow = () => {
     setShow(true);
     setActivePage(6);
@@ -53,7 +57,7 @@ const AppBar = (props) => {
 
   useEffect(() => {
     dispatch(turnOffError())
-  }, [])
+  }, [dispatch])
   const hasError = (field) => {
     return validation.touched[field] && validation.errors[field] ? true : false;
   };
@@ -72,6 +76,10 @@ const AppBar = (props) => {
     }));
   };
 
+  const hanldeCheckOut = (e) => {
+      setCheckOut(e.target.checked);
+  }
+
   const handleLogin = () => {
     setValidation((pre) => ({
       ...pre,
@@ -82,21 +90,20 @@ const AppBar = (props) => {
       },
     }));
     if (validation.isvalid === true) {
-      dispatch(login({ dataLogin }))
+      dispatch(login({ dataLogin,checkOut }))
         .then((res) => {
-          if (!res.error) {
+          if (!res.errors) {
             console.log(res)
-            // if (res.payload.roles?.length >= 2) {
-            //   navigate('/admin')
-            // } else {
-            //   navigate(0)
-            // }
+            if (res.payload.roles.some((rol)=>rol ==="ROLE_USER") === true) {
+              navigate(0)
+            } else {
+              navigate('/system_mienspa')
+            }
           }
 
         })
     }
   };
-  console.log("isloadding", loading)
   return (
     <>
       <header>
@@ -120,7 +127,17 @@ const AppBar = (props) => {
                   :
                   <Nav.Link className={activePage === 5 ? 'active' : ''} href="/booking"><FontAwesomeIcon icon={['fas', 'calendar-alt']} /> Booking</Nav.Link>}
                 <Nav className='nav_between'></Nav>
-                <Nav.Link className={activePage === 6 ? 'active' : ''} onClick={handleShow}><FontAwesomeIcon icon={['fa', 'user']} /> Login</Nav.Link>
+                {auth?.roles.some((rol) => rol === "ROLE_USER") === true ?
+                  <NavDropdown title={auth?.username} id="basic-nav-dropdown">
+                    <NavDropdown.Item href="/user"><FontAwesomeIcon icon={['fa', 'user']} /> Profile</NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="#action/3.4">
+                      <FontAwesomeIcon icon={['fa', 'sign-out']} /> Logout
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                  :
+                  <Nav.Link className={activePage === 6 ? 'active' : ''} onClick={handleShow}><FontAwesomeIcon icon={['fa', 'user']} /> Login</Nav.Link>
+                }
               </Nav>
             </Navbar.Collapse>
           </Container>
@@ -182,18 +199,17 @@ const AppBar = (props) => {
                             {hasError("password") ? validation.errors.password?.[0] : null}
                           </Form.Control.Feedback>
                         </Form.Group>
-                        {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                          <Form.Check type="checkbox" label="Check me out" />
-                        </Form.Group> */}
+                        <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                          <Form.Check type="checkbox" label="Check me out" onChange={hanldeCheckOut}/>
+                        </Form.Group>
                         <Form.Group className="mb-3" >
                           {loading === true ? (
-                            <Spinner animation="border" role="status">
+                            <Spinner animation="border" role="status" style={{ marginLeft: "48%" }}>
                               <span className="visually-hidden">Loading...</span>
                             </Spinner>
                           ) : <Form.Control
                             className="btnRegister"
                             type="submit"
-                            value="Login"
                             onClick={handleLogin}
                           />}
                         </Form.Group>
@@ -229,18 +245,7 @@ const AppBar = (props) => {
             </Col>
           </Row>
         </Container>
-        {/* <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={handleClose}>
-              Save Changes
-            </Button>
-          </Modal.Footer> */}
+
       </Modal>
     </>
 

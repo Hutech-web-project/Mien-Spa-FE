@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Appbar from '../../global_components/admin/appbar'
 import { Col, Container, ListGroup, Row } from 'react-bootstrap'
 import '../../assets/scss/admin_css/admin.scss'
@@ -7,8 +7,15 @@ import CategoriesPage from './Categories/categories_page'
 import ProductsPage from './Products/products_page'
 import ServicesPage from './Services/services_page'
 import AccountsPage from './Accounts/accounts_page'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../../redux/Auth/auth_page_selecter'
+import { useNavigate } from 'react-router-dom'
 const AdminIndex = () => {
+  const navigate = useNavigate()
   const [Id,setId]= useState(1)
+  
+
+
   const handleSelect = (id)=>{
     let collapseOld = document.getElementById('item-'+Id);
     collapseOld.classList.remove('active');
