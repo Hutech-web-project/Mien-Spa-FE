@@ -5,33 +5,29 @@ import '../../assets/scss/user_css/appbar.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { validate } from 'validate.js'
-import { LoginPageValidate } from '../../util/validate'
-import { login } from "../../redux/Auth/auth_page_thunk";
-import { selectError, selectLoading, selectAuth } from '../../redux/Auth/auth_page_selecter'
-import { turnOffError } from '../../redux/Auth/auth_page_reducer'
+import { LoginPageValidate, RegisterPageValidate } from '../../util/validate'
+import { login, register } from "../../redux/Auth/auth_page_thunk";
+import { selectError, selectLoading } from '../../redux/Auth/auth_page_selecter'
+import { logout, turnOffError } from '../../redux/Auth/auth_page_reducer'
+import { selectUser, selectUserLoading } from '../../redux/User/user_page_selecter'
+import { ToastContainer, toast } from 'react-toastify'
+
+const delay = ms => new Promise(
+  resolve => setTimeout(resolve, ms)
+);
 
 const AppBar = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
-  const [checkOut,setCheckOut]  = useState(false);
-  //input datalogin
-  const [dataLogin, setDataLogin] = useState({
-    email: "",
-    password: "",
-  });
-
-  //input validate login
-  const [validation, setValidation] = useState({
-    touched: {},
-    errors: {},
-    isvalid: false,
-  });
   const [show, setShow] = useState(false);
   const [activePage, setActivePage] = useState(props.id);
 
-  const auth = useSelector(selectAuth);
+  const user = useSelector(selectUser);
+
+  const hanldeLogOut = () => {
+    dispatch(logout());
+    navigate(0);
+  }
 
   const handleShow = () => {
     setShow(true);
@@ -46,64 +42,6 @@ const AppBar = (props) => {
 
   };
 
-  useEffect(() => {
-    const errors = validate.validate({ email: dataLogin.email, password: dataLogin.password }, LoginPageValidate);
-    setValidation((pre) => ({
-      ...pre,
-      isvalid: errors ? false : true,
-      errors: errors || {},
-    }));
-  }, [dataLogin]);
-
-  useEffect(() => {
-    dispatch(turnOffError())
-  }, [dispatch])
-  const hasError = (field) => {
-    return validation.touched[field] && validation.errors[field] ? true : false;
-  };
-
-  const handleChange = (event) => {
-    setDataLogin((preState) => ({
-      ...preState,
-      [event.target.name]: event.target.value,
-    }));
-    setValidation((pre) => ({
-      ...pre,
-      touched: {
-        ...pre.touched,
-        [event.target.name]: true,
-      },
-    }));
-  };
-
-  const hanldeCheckOut = (e) => {
-      setCheckOut(e.target.checked);
-  }
-
-  const handleLogin = () => {
-    setValidation((pre) => ({
-      ...pre,
-      touched: {
-        ...pre.touched,
-        password: true,
-        email: true,
-      },
-    }));
-    if (validation.isvalid === true) {
-      dispatch(login({ dataLogin,checkOut }))
-        .then((res) => {
-          if (!res.errors) {
-            console.log(res)
-            if (res.payload.roles.some((rol)=>rol ==="ROLE_USER") === true) {
-              navigate(0)
-            } else {
-              navigate('/system_mienspa')
-            }
-          }
-
-        })
-    }
-  };
   return (
     <>
       <header>
@@ -127,11 +65,11 @@ const AppBar = (props) => {
                   :
                   <Nav.Link className={activePage === 5 ? 'active' : ''} href="/booking"><FontAwesomeIcon icon={['fas', 'calendar-alt']} /> Booking</Nav.Link>}
                 <Nav className='nav_between'></Nav>
-                {auth?.roles.some((rol) => rol === "ROLE_USER") === true ?
-                  <NavDropdown title={auth?.username} id="basic-nav-dropdown">
+                {user !== null ?
+                  <NavDropdown title={user?.usUserName} id="basic-nav-dropdown">
                     <NavDropdown.Item href="/user"><FontAwesomeIcon icon={['fa', 'user']} /> Profile</NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="#action/3.4">
+                    <NavDropdown.Item onClick={hanldeLogOut}>
                       <FontAwesomeIcon icon={['fa', 'sign-out']} /> Logout
                     </NavDropdown.Item>
                   </NavDropdown>
@@ -140,6 +78,7 @@ const AppBar = (props) => {
                 }
               </Nav>
             </Navbar.Collapse>
+            <ToastContainer />
           </Container>
         </Navbar>
       </header>
@@ -163,94 +102,309 @@ const AppBar = (props) => {
                 centered='true'
               >
                 <Tab eventKey="login" title="Login">
-                  <Col sx={12} sm={12} md={12}>
-                    <h3 className="register-heading">Login</h3>
-                    <Row className='register-form'>
-                      {error === true ? (
-                        <Alert key={'warning'} variant={'warning'}>
-                          Email hoặc mật khẩu không chính xác!
-                        </Alert>
-
-                      ) : null}
-                      <Form as={Col}>
-                        <Form.Group className="mb-3" controlId="formLoginUserName">
-                          <Form.Control
-                            className='form-control input-form'
-                            type="text"
-                            placeholder="Email"
-                            name="email"
-                            onChange={handleChange}
-                            isInvalid={hasError("email")}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {hasError("email") ? validation.errors.email?.[0] : null}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formLoginformPassword">
-                          <Form.Control
-                            className='input-form'
-                            type="password"
-                            placeholder="Password"
-                            name="password"
-                            onChange={handleChange}
-                            isInvalid={hasError("password")}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {hasError("password") ? validation.errors.password?.[0] : null}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                          <Form.Check type="checkbox" label="Check me out" onChange={hanldeCheckOut}/>
-                        </Form.Group>
-                        <Form.Group className="mb-3" >
-                          {loading === true ? (
-                            <Spinner animation="border" role="status" style={{ marginLeft: "48%" }}>
-                              <span className="visually-hidden">Loading...</span>
-                            </Spinner>
-                          ) : <Form.Control
-                            className="btnRegister"
-                            type="submit"
-                            onClick={handleLogin}
-                          />}
-                        </Form.Group>
-                      </Form>
-                    </Row>
-                  </Col>
+                  <Login />
                 </Tab>
                 <Tab eventKey="register" title="Register">
-                  <Col sx={12} sm={12} md={12}>
-                    <h3 className="register-heading">Register</h3>
-                    <Row className='register-form'>
-                      <Form as={Col}>
-                        <Form.Group className="mb-3" controlId="formRegisterUserName">
-                          <Form.Control className='form-control input-form' type="text" placeholder="User Name" />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formRegisterformPassword">
-                          <Form.Control className='input-form' type="password" placeholder="Password" />
-                        </Form.Group>
-                        <Form.Group className="mb-3" >
-                          <Form.Control className='input-form' type="password" placeholder="Confirm Password" />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                          <Form.Check type="checkbox" label="Check me out" />
-                        </Form.Group>
-                        <Form.Group className="mb-3" >
-                          <Form.Control className="btnRegister" type="submit" value="Login" />
-                        </Form.Group>
-                      </Form>
-                    </Row>
-                  </Col>
+                  <Register />
                 </Tab>
               </Tabs>
             </Col>
           </Row>
         </Container>
-
       </Modal>
     </>
-
-
   )
+
+  function Login() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const loading = useSelector(selectLoading);
+    const errorLogin = useSelector(selectError);
+    const [checkOut, setCheckOut] = useState(false);
+    const [dataLogin, setDataLogin] = useState({
+      email: "",
+      password: "",
+    });
+    const [validationLogin, setValidationLogin] = useState({
+      touched: {},
+      errors: {},
+      isvalid: false,
+    });
+
+    useEffect(() => {
+      dispatch(turnOffError())
+    }, [dispatch])
+
+    useEffect(() => {
+      const errors = validate.validate({ email: dataLogin.email, password: dataLogin.password }, LoginPageValidate);
+      setValidationLogin((pre) => ({
+        ...pre,
+        isvalid: errors ? false : true,
+        errors: errors || {},
+      }));
+    }, [dataLogin]);
+
+    const hasErrorLogin = (field) => {
+      return validationLogin.touched[field] && validationLogin.errors[field] ? true : false;
+    };
+
+    const hanldeCheckOut = (e) => {
+      setCheckOut(e.target.checked);
+    }
+
+    const handleChangeLogin = (event) => {
+      setDataLogin((preState) => ({
+        ...preState,
+        [event.target.name]: event.target.value,
+      }));
+      setValidationLogin((pre) => ({
+        ...pre,
+        touched: {
+          ...pre.touched,
+          [event.target.name]: true,
+        },
+      }));
+    };
+
+    const handleLogin = () => {
+      setValidationLogin((pre) => ({
+        ...pre,
+        touched: {
+          ...pre.touched,
+          password: true,
+          email: true,
+        },
+      }));
+      if (validationLogin.isvalid === true) {
+        dispatch(login({ dataLogin, checkOut }))
+          .then((res) => {
+            if (!res.errors) {
+              if (errorLogin === true) {
+                if (res.payload?.roles.some((rol) => rol === "ROLE_USER") === true) {
+                  navigate(0)
+                } else {
+                  navigate('/system_mienspa')
+                }
+              }
+
+            }
+
+          })
+      }
+    };
+
+    return (
+      <Col sx={12} sm={12} md={12}>
+        <h3 className="register-heading">Login</h3>
+        <Row className='register-form'>
+          {errorLogin === true ? (
+            <Alert key={'warning'} variant={'warning'}>
+              Email or password is incorrect!
+            </Alert>
+          ) : null}
+          <Form as={Col}>
+            <Form.Group className="mb-3" controlId="formLoginUserName">
+              <Form.Control
+                className='form-control input-form'
+                type="text"
+                placeholder="Email"
+                name="email"
+                onChange={handleChangeLogin}
+                isInvalid={hasErrorLogin("email")}
+              />
+              <Form.Control.Feedback type="invalid">
+                {hasErrorLogin("email") ? validationLogin.errors.email?.[0] : null}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formLoginformPassword">
+              <Form.Control
+                className='input-form'
+                type="password"
+                placeholder="Password"
+                name="password"
+                onChange={handleChangeLogin}
+                isInvalid={hasErrorLogin("password")}
+              />
+              <Form.Control.Feedback type="invalid">
+                {hasErrorLogin("password") ? validationLogin.errors.password?.[0] : null}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicCheckbox">
+              <Form.Check type="checkbox" label="Check me out" onChange={hanldeCheckOut} />
+            </Form.Group>
+            <Form.Group className="mb-3" >
+              {loading === true ? (
+                <Spinner animation="border" role="status" style={{ marginLeft: "48%" }}>
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              ) : <Form.Control
+                className="btnRegister"
+                type="submit"
+                onClick={handleLogin}
+              />}
+            </Form.Group>
+          </Form>
+        </Row>
+      </Col>
+    )
+  }
+
+  function Register() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const loading = useSelector(selectLoading);
+    const errorRegister = useSelector(selectError);
+    const [dataRegister, setDataRegister] = useState({
+      username: "",
+      password: "",
+      confirmPassword: "",
+      email: "",
+    });
+    const [validationRegister, setValidationRegister] = useState({
+      touched: {},
+      errors: {},
+      isvalid: false,
+    });
+
+    useEffect(() => {
+      dispatch(turnOffError())
+    }, [dispatch])
+
+    useEffect(() => {
+      const errors = validate.validate({ username: dataRegister.username, password: dataRegister.password, confirmPassword: dataRegister.confirmPassword, email: dataRegister.email }, RegisterPageValidate);
+      setValidationRegister((pre) => ({
+        ...pre,
+        isvalid: errors ? false : true,
+        errors: errors || {},
+      }));
+    }, [dataRegister]);
+    
+    const hasErrorRegister = (field) => {
+      return validationRegister.touched[field] && validationRegister.errors[field] ? true : false;
+    };
+  
+    const handleChangeRegister = (event) => {
+      setDataRegister((preState) => ({
+        ...preState,
+        [event.target.name]: event.target.value,
+      }));
+      setValidationRegister((pre) => ({
+        ...pre,
+        touched: {
+          ...pre.touched,
+          [event.target.name]: true,
+        },
+      }));
+    };
+  
+     const handleRegister = async()=> {
+      setValidationRegister((pre) => ({
+        ...pre,
+        touched: {
+          ...pre.touched,
+          password: true,
+          email: true,
+        },
+      }));
+      if (validationRegister.isvalid === true) {
+        dispatch(register({ dataRegister }))
+          .then(async (res) => {
+            if (!res.errors) {
+              console.log(res.payload)
+              if (res.payload === 201)  {
+                toast.success('Resgister success !', {
+                  position: toast.POSITION.TOP_RIGHT
+                });
+                await delay(700)
+                navigate(0);
+              } else {
+  
+              }
+            }
+          })
+      }
+    };
+    return (
+      <Col sx={12} sm={12} md={12}>
+        <h3 className="register-heading">Register</h3>
+        <Row className='register-form'>
+          {errorRegister === true ? (
+            <Alert key={'warning'} variant={'warning'}>
+              Email already exists!
+            </Alert>
+          ) : null}
+          <Form as={Col}>
+            <Form.Group className="mb-3" controlId="formRegisterUserName">
+              <Form.Control
+                className='input-form'
+                type="text"
+                name="username"
+                placeholder="Enter user name"
+                onChange={handleChangeRegister}
+                isInvalid={hasErrorRegister("username")}
+              />
+              <Form.Control.Feedback type="invalid">
+                {hasErrorRegister("username") ? validationRegister.errors.username?.[0] : null}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formRegisterEmail">
+              <Form.Control
+                className='input-form'
+                type="email"
+                name="email"
+                placeholder="Enter email"
+                onChange={handleChangeRegister}
+                isInvalid={hasErrorRegister("email")}
+              />
+              <Form.Control.Feedback type="invalid">
+                {hasErrorRegister("email") ? validationRegister.errors.email?.[0] : null}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formRegisterformPassword">
+              <Form.Control
+                className='input-form'
+                type="password"
+                name="password"
+                placeholder="Enter password"
+                onChange={handleChangeRegister}
+                isInvalid={hasErrorRegister("password")}
+              />
+              <Form.Control.Feedback type="invalid">
+                {hasErrorRegister("password") ? validationRegister.errors.password?.[0] : null}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3" >
+              <Form.Control
+                className='input-form'
+                type="password"
+                name="confirmPassword"
+                placeholder="Enter confirm password"
+                onChange={handleChangeRegister}
+                isInvalid={hasErrorRegister("confirmPassword")}
+              />
+              <Form.Control.Feedback type="invalid">
+                {hasErrorRegister("confirmPassword") ? validationRegister.errors.confirmPassword?.[0] : null}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3" >
+              {loading === true ? (
+                <Spinner animation="border" role="status" style={{ marginLeft: "48%" }}>
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              ) :
+                <Form.Control
+                  className="btnRegister"
+                  type="submit"
+                  value="Register"
+                  onClick={handleRegister}
+                />
+              }
+            </Form.Group>
+          </Form>
+        </Row>
+      </Col>
+    )
+  }
 }
 
 export default AppBar

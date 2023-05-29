@@ -1,5 +1,5 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import {login } from "./auth_page_thunk";
+import {login, register } from "./auth_page_thunk";
 
 
 const initialState = {
@@ -15,8 +15,16 @@ export const AuthPage = createSlice({
     reducers: {
         logout: (state, action) => {
             state.user = null;
-            localStorage.removeItem("token");
-            localStorage.removeItem("refreshToken");
+            if(localStorage.getItem("ck") === null){
+                sessionStorage.removeItem("token");
+                sessionStorage.removeItem("refreshToken");
+                sessionStorage.removeItem("uId");
+            }else{
+                localStorage.removeItem("ck");
+                localStorage.removeItem("uId");
+                localStorage.removeItem("token");
+                localStorage.removeItem("refreshToken");
+            }         
         },
         turnOffRegisterSuccess: (state, action) => {
             state.alertSuccess = false;
@@ -31,6 +39,10 @@ export const AuthPage = createSlice({
             state.error = true;
             state.auth  = state.payload;
         });
+        builder.addCase(register.rejected, (state,)=> {
+            state.isLoading = false;
+            state.error = true;
+        });
 
         builder.addMatcher(
             isAnyOf(login.fulfilled),
@@ -40,8 +52,17 @@ export const AuthPage = createSlice({
                 state.error = false;
             }
         );
+
+        builder.addMatcher(
+            isAnyOf(register.fulfilled),
+            (state,) => {
+                state.isLoading = false;
+                state.error = false;
+            }
+        );
         builder.addMatcher(
             isAnyOf(
+                register.pending,
                 login.pending,
             ),(state ) => {
                 state.isLoading = true;

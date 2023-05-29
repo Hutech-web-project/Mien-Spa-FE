@@ -6,17 +6,19 @@ import { persistStore } from "redux-persist";
 import BookingPage  from './Booking/booking_page_reducer';
 import AuthPage  from './Auth/auth_page_reducer';
 import CategoriesPage  from './Category/category_page_reducer';
+import UserPage  from './User/user_page_reducer';
 const rootReducer = combineReducers({
     BookingPage,
     AuthPage,
     CategoriesPage,
+    UserPage
 });
 
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ["AuthPage"],
+  whitelist: [""],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

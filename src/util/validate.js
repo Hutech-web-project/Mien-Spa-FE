@@ -1,4 +1,5 @@
-const validPassword = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+const validPasswordAdmin = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+const validPasswordUser = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 const validName = /^([a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+)$/i
 const validAddress = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ0-9\s,/()-.]*$/i
 export const schemaUser = {
@@ -99,56 +100,56 @@ export const BookingPagevalidate = {
         },
     },
 }
-export const schemaRegister = {
+export const RegisterPageValidate = {
     username: {
         presence: {
             allowEmpty: false,
-            message: "^Họ và tên không được trống",
+            message: "^First and last name cannot be left blank",
         },
         length: {
             minimum: 3,
-            message: "^Họ và tên không được quá ngắn",
+            message: "^First and last name should not be too short",
         },
 
         format: {
             pattern: validName,
             flags: "i",
-            message: "^Họ và tên không bao gồm số hoặc ký tự đặc biệt",
+            message: "^Full name without numbers or special characters",
         },
     },
     password: {
         presence: {
             allowEmpty: false,
-            message: "^Mật khẩu không được trống",
+            message: "^Password can not be blank",
         },
         length: {
             minimum: 8,
-            message: "^Mật khẩu phải ít nhất 8 ký tự",
+            message: "^Password needs to be at least 8 characters long",
         },
         format: {
-            pattern: validPassword,
+            pattern: validPasswordUser,
             flags: "i",
-            message: "Mật khẩu phải chứa ít nhất\n 1 chữ viết hoa,\n 1 chữ thường,\n 1 số và 1 kí tự đặc biệt"
+            message: "Password must contain at least\n 1 capital letter,\n 1 lowercase letter"
         }
     },
     confirmPassword: {
         presence: {
             allowEmpty: false,
-            message: "^Mật khẩu không được trống",
+            message: "^Password cannot be blank",
         },
         equality: {
             attribute: "password",
-            message: "^Mật khẩu không trùng khớp",
+            message: "^Password does not match",
         },
     },
 
     email: {
         presence: {
             allowEmpty: false,
-            message: "^Email không được trống",
+            message: "^Email cannot be empty",
         },
         email: {
-            message: "^Email không đúng định dạng (xxx@xx.xxx)",
+            message: "^Invalid email format (xxx@xx.xxx)",
         },
     },
 };
@@ -166,7 +167,6 @@ export const LoginPageValidate = {
         },
     },   
 };
-
 export const schemaPassword = {
     password: {
         presence: {
@@ -174,7 +174,7 @@ export const schemaPassword = {
             message: "^Mật khẩu không được trống",
         },
         format: {
-            pattern: validPassword,
+            pattern: validPasswordUser,
             flags: "i",
             message: "Mật khẩu phải chứa ít nhất\n 1 chữ viết hoa,\n 1 chữ thường,\n 1 số và 1 kí tự đặc biệt"
         }
@@ -203,7 +203,7 @@ export const schemaChangePassword = {
             message: "^Mật khẩu không được trống",
         },
         format: {
-            pattern: validPassword,
+            pattern: validPasswordUser,
             flags: "i",
             message: "Mật khẩu phải chứa ít nhất\n 1 chữ viết hoa,\n 1 chữ thường,\n 1 số và 1 kí tự đặc biệt"
         }

@@ -34,7 +34,13 @@ const accessToken = (previousAPI) => {
 
 api.interceptors.request.use(
     function (config) {
-        const token = localStorage.getItem("token");
+        const checkOut = localStorage.getItem("ck");
+        let token;
+        if(checkOut != null){
+          token = localStorage.getItem("token");
+        }else{
+          token = sessionStorage.getItem("token");
+        }      
         config.headers.Authorization = `Bearer ${token}`;
         return config;
       },
@@ -45,7 +51,6 @@ api.interceptors.request.use(
 )
 
 api.interceptors.response.use(null, function (error) {
-    console.log("error", error);
     if (
       error.config &&
       error.response?.status === 401

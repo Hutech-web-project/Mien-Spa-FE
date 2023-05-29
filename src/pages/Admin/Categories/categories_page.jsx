@@ -258,7 +258,7 @@ function AddCategory(props) {
     }));
   }
   const handlePostCate = () => {
-    if (validationPost.isvalid === true === true && checkDuplicatePost === false) {
+    if (validationPost.isvalid === true && checkDuplicatePost === false) {
       setValidationPost((pre) => ({
         ...pre,
         touched: {
@@ -275,7 +275,6 @@ function AddCategory(props) {
               cateName: "",
             }));
           });
-          console.log(res1.payload)
           toast.success('Create category success !', {
             position: toast.POSITION.TOP_RIGHT
           });

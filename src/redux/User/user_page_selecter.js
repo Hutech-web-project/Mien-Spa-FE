@@ -1,3 +1,3 @@
-export const selectAuth = (state) =>state.AuthPage.auth
-export const selectLoading= (state) =>state.AuthPage.isLoading
-export const selectError = (state) =>state.AuthPage.error
+export const selectUser = (state) =>state.UserPage.user
+export const selectUserLoading= (state) =>state.UserPage.isLoading
+export const selectUserError = (state) =>state.UserPage.error

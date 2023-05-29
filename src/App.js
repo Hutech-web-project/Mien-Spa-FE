@@ -4,14 +4,28 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "./fontawesome.js"
 import './App.css';
 import routes from './routes/routes';
-import React from 'react';
-import { useSelector } from 'react-redux';
-import { selectAuth } from './redux/Auth/auth_page_selecter.js';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Page404 from './pages/Error/404.jsx';
+import { getUserById } from './redux/User/user_page_thunk.js';
 
 
 function App() {
-  const auth = useSelector(selectAuth);
+  const [user,setUser] = useState(null);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if(localStorage.getItem("ck") === null){
+      if(sessionStorage.getItem("token") !== null){
+        dispatch(getUserById(sessionStorage.getItem("uId"))).then((res) => {
+          setUser(res.payload);
+        });
+      }     
+    }else{
+      dispatch(getUserById(localStorage.getItem("uId"))).then((res) => {
+        setUser(res.payload);
+      });
+    }
+  }, [dispatch]);
   return (
     <BrowserRouter>
       <Routes>
@@ -21,18 +35,17 @@ function App() {
             <>
               {route.allowed === 1?
                <Route element={
-                (auth?.roles.some((rol)=>rol ==="ROLE_USER") === true||auth === null)?
+                (user?.listRole.some((rol)=>rol ==="ROLE_USER") === true||user === null)?
                 route.element:<Page404 path={"/system_mienspa"}/>
               } path={route.path} key={route.path}></Route>:
                route.allowed === 2?
                <Route element={
-                route.element
-                /auth?.roles.some((rol)=>rol ==="ROLE_USER") === true?
+                user?.listRole.some((rol)=>rol ==="ROLE_USER") === true?
                  route.element:<Page404 path={"/"}/>
               } path={route.path} key={route.path}></Route>:
                route.allowed === 3?
                <Route element={
-                auth?.roles.some((rol)=>rol !=="ROLE_USER") === true?
+                user?.listRole.some((rol)=>rol !=="ROLE_USER") === true?
                 route.element:<Page404 path={"/"}/>
               } path={route.path} key={route.path}></Route>
                :null
