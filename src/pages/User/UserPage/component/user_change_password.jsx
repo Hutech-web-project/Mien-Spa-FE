@@ -5,7 +5,7 @@ import validate from 'validate.js';
 import { schemaChangePassword } from "../../../../util/validate"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const ChangePassword = () => {
+const UserChangePassword = () => {
     const [showPassword1, setShowPassword1] = useState(false);
     const [showPassword2, setShowPassword2] = useState(false);
     const [showPassword3, setShowPassword3] = useState(false);
@@ -145,4 +145,4 @@ const ChangePassword = () => {
     )
 }
 
-export default ChangePassword
+export default UserChangePassword

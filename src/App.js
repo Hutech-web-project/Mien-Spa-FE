@@ -8,10 +8,15 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Page404 from './pages/Error/404.jsx';
 import { getUserById } from './redux/User/user_page_thunk.js';
+import { selectUserLoading } from './redux/User/user_page_selecter.js';
 
 
 function App() {
   const [user,setUser] = useState(null);
+  const [idUser,]=useState(
+  localStorage.getItem("ck") === null?
+  sessionStorage.getItem("uId"):
+  localStorage.getItem("uId"));
   const dispatch = useDispatch();
   useEffect(() => {
     if(localStorage.getItem("ck") === null){
@@ -19,19 +24,19 @@ function App() {
         dispatch(getUserById(sessionStorage.getItem("uId"))).then((res) => {
           setUser(res.payload);
         });
-      }     
+      }
     }else{
       dispatch(getUserById(localStorage.getItem("uId"))).then((res) => {
         setUser(res.payload);
       });
-    }
+    }   
   }, [dispatch]);
   return (
     <BrowserRouter>
       <Routes>
         {
           React.Children.toArray(routes.map((route) => {
-            return (
+            return (             
             <>
               {route.allowed === 1?
                <Route element={
@@ -40,17 +45,16 @@ function App() {
               } path={route.path} key={route.path}></Route>:
                route.allowed === 2?
                <Route element={
-                user?.listRole.some((rol)=>rol ==="ROLE_USER") === true?
+                user?.listRole.some((rol)=>rol ==="ROLE_USER") === true && idUser !== null?
                  route.element:<Page404 path={"/"}/>
               } path={route.path} key={route.path}></Route>:
                route.allowed === 3?
                <Route element={
-                user?.listRole.some((rol)=>rol !=="ROLE_USER") === true?
+                user?.listRole.some((rol)=>rol !=="ROLE_USER") === true && idUser !== null?
                 route.element:<Page404 path={"/"}/>
               } path={route.path} key={route.path}></Route>
                :null
-              }
-             
+              }            
             </>
             )
           }))

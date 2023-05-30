@@ -1,7 +1,7 @@
 import React from 'react'
 import "../../../../assets/scss/user_css/user_page/orders.scss"
 import { Col, Row } from 'react-bootstrap'
-const Orders = () => {
+const UserOrders = () => {
     return (
         <>
             <Col className='main-body'>
@@ -77,4 +77,4 @@ const Orders = () => {
     )
 }
 
-export default Orders
+export default UserOrders

@@ -1,10 +1,10 @@
 
 import { Col, Tab, Row, Nav } from 'react-bootstrap'
 import UserProfile from './user_profile'
-import ChangePassword from './change_password'
-import Orders from './orders'
 import "../../../../assets/scss/user_css/user_page/user_body.scss"
 import { useState } from 'react'
+import UserOrders from './user_orders'
+import UserChangePassword from './user_change_password'
 
 const UserBody = () => {
     const [activeKey, setActiveKey] = useState('first');
@@ -38,10 +38,10 @@ const UserBody = () => {
                                 <UserProfile />
                             </Tab.Pane>
                             <Tab.Pane eventKey="second">
-                                <ChangePassword/>
+                                <UserChangePassword/>
                             </Tab.Pane>
                             <Tab.Pane eventKey="third">
-                                <Orders/>
+                                <UserOrders/>
                             </Tab.Pane>
                         </Tab.Content>
                     </Col>

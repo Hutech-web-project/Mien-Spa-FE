@@ -178,15 +178,14 @@ const AppBar = (props) => {
       if (validationLogin.isvalid === true) {
         dispatch(login({ dataLogin, checkOut }))
           .then((res) => {
-            if (!res.errors) {
-              if (errorLogin === true) {
-                if (res.payload?.roles.some((rol) => rol === "ROLE_USER") === true) {
-                  navigate(0)
-                } else {
-                  navigate('/system_mienspa')
-                }
+            console.log(res);
+            console.log(res.error);
+            if (!res.error) {
+              if (res.payload?.roles.some((rol) => rol === "ROLE_USER") === true) {
+                navigate(0)
+              } else {
+                navigate('/system_mienspa')
               }
-
             }
 
           })
@@ -309,17 +308,12 @@ const AppBar = (props) => {
       if (validationRegister.isvalid === true) {
         dispatch(register({ dataRegister }))
           .then(async (res) => {
-            if (!res.errors) {
-              console.log(res.payload)
-              if (res.payload === 201)  {
-                toast.success('Resgister success !', {
-                  position: toast.POSITION.TOP_RIGHT
-                });
-                await delay(700)
-                navigate(0);
-              } else {
-  
-              }
+            if (!res.error) {
+              toast.success('Resgister success !', {
+                position: toast.POSITION.TOP_RIGHT
+              });
+              await delay(700)
+              navigate(0);
             }
           })
       }

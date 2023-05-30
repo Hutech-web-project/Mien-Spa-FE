@@ -2,7 +2,8 @@ const validPasswordAdmin = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
 const validPasswordUser = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 const validName = /^([a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+)$/i
 const validAddress = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ0-9\s,/()-.]*$/i
-export const schemaUser = {
+const valiDob = /^[0-9]{2}[/]{1}[0-9]{2}[/]{1}[0-9]{4}$/i
+export const UserPage = {
     usUserName: {
         presence: {
             allowEmpty: false,
@@ -17,7 +18,12 @@ export const schemaUser = {
     usDob: {
         presence: {
             allowEmpty: false,
-            message: "^Ngày sinh không được trống",
+            message: "^Date of birth cannot be empty",
+        },
+        format: {
+            pattern: valiDob,
+            flags: "i",
+            message: '^Format is incorrect',
         },
 
     },

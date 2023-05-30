@@ -20,7 +20,6 @@ export const login = createAsyncThunk(
                     sessionStorage.setItem("uId",response_auth.data.id);
                 }   
             }
-            console.log(response_auth)
             return response_auth.data;
         }catch (err){
             return rejectWithValue(err.message); 
