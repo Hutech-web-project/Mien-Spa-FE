@@ -7,22 +7,27 @@ import UserIndex from "../pages/User/UserPage/user_index";
   {
     path: "/",
     element: <HomeIndex />,
+    allowed: 1
   },
   {
     path: "/shop",
     element: <ShopIndex />,
+    allowed: 1
   },
   {
     path: "/booking",
     element: <BookingIndex />,
+    allowed: 1
   },
   {
     path: "/user",
     element: <UserIndex />,
+    allowed: 2
   },
   {
     path:"/system_mienspa",
     element: <AdminIndex />,
+    allowed: 3
   }
 ];
 
