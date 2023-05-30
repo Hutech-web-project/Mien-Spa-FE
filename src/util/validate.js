@@ -196,32 +196,32 @@ export const schemaPassword = {
         },
     },
 }
-export const schemaChangePassword = {
+export const ChangePasswordWord = {
     passwordOld: {
         presence: {
             allowEmpty: false,
-            message: "^Mật khẩu không được trống",
+            message: "^Old password cannot be blank",
         },
     },
     passwordNew: {
         presence: {
             allowEmpty: false,
-            message: "^Mật khẩu không được trống",
+            message: "^New password cannot be blank",
         },
         format: {
             pattern: validPasswordUser,
             flags: "i",
-            message: "Mật khẩu phải chứa ít nhất\n 1 chữ viết hoa,\n 1 chữ thường,\n 1 số và 1 kí tự đặc biệt"
+            message: "Password must contain at least\n 1 capital letter,\n 1 lowercase letter"
         }
     },
     confirmPassword: {
         presence: {
             allowEmpty: false,
-            message: "^Mật khẩu không được trống",
+            message: "^Confirm password cannot be blank",
         },
         equality: {
             attribute: "passwordNew",
-            message: "^Mật khẩu không trùng khớp",
+            message: "^Password does not match",
         },
     },
 }

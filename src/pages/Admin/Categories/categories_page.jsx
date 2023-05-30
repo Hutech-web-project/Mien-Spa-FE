@@ -448,7 +448,7 @@ function EditCategory(props) {
       }));
       dispatch(putCategories(dataPut)).then((res1) => {
         console.log(res1.payload)
-        if (res1.payload === 201) {
+        if (res1.payload === 200) {
           dispatch(getCategories()).then((res2) => {
             setDataListCate(res2.payload);
           });

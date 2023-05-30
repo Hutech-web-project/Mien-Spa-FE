@@ -153,3 +153,15 @@ export const getAllUser = createAsyncThunk(
       }
     }
   );
+
+  export const changePassword = createAsyncThunk(
+    "change/password",
+    async (data, { rejectWithValue }) => {
+      try {
+        const response = await api.put("/api/UserChangePassword", data);
+        return response.status;
+      } catch (err) {
+        return rejectWithValue(err.message);
+      }
+    }
+  );

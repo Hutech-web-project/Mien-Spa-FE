@@ -18,7 +18,6 @@ const delay = ms => new Promise(
 
 const AppBar = (props) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [activePage, setActivePage] = useState(props.id);
 
@@ -26,7 +25,7 @@ const AppBar = (props) => {
 
   const hanldeLogOut = () => {
     dispatch(logout());
-    navigate(0);
+    window.location="/";
   }
 
   const handleShow = () => {

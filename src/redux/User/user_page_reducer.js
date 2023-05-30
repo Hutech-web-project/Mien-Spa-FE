@@ -1,5 +1,5 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { getAllUser, getUserById, getUserByIdAdmin, postUser, updatePassword } from "./user_page_thunk";
+import { changePassword, getAllUser, getUserById, getUserByIdAdmin, postUser, updatePassword } from "./user_page_thunk";
 
 
 const initialState = {
@@ -30,7 +30,7 @@ export const UserPage = createSlice({
               postUser.rejected,
             //   fetchAllRole.rejected,
             //   postRole.rejected,
-            //   changePassword.rejected
+              changePassword.rejected
             ),
             (state, action) => {
               state.isLoading = false;
@@ -49,8 +49,9 @@ export const UserPage = createSlice({
                 getUserByIdAdmin.fulfilled,
                 postUser.fulfilled,
                 updatePassword.fulfilled,
+                changePassword.fulfilled,
             ),
-            (state, action) => {
+            (state,) => {
               state.isLoading = false;
               state.error = false;
             }
@@ -62,7 +63,7 @@ export const UserPage = createSlice({
               postUser.pending,
               updatePassword.pending,
               getUserByIdAdmin.pending,
-            //   changePassword.pending
+              changePassword.pending
             ),
             (state, action) => {
               state.isLoading = true;

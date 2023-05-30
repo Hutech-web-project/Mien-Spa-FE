@@ -16,24 +16,14 @@ const options = {
 };
 const UserProfile = () => {
     const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
     const libraries = "places";
     const user = useSelector(selectUser);
-    console.log(user)
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
     });
 
-    const autoCompleteRef = useRef();
-    const valueDirection = useRef();
-    useEffect(() => {
-        autoCompleteRef.current = new window.google.maps.places.Autocomplete(
-            valueDirection.current,
-            options
-        );
-    }, []);
+ 
 
 
     const [userUpdate, setUserUpdate] = useState({
@@ -56,7 +46,6 @@ const UserProfile = () => {
         }));
     }, [userUpdate]);
 
-    console.log(userUpdate)
     const hasError = (field) => {
         return validation.touched[field] && validation.errors[field] ? true : false;
     };
@@ -89,6 +78,8 @@ const UserProfile = () => {
         }));
 
     }
+
+    console.log(isLoaded)
     return (
         <>
             <div className="container">
@@ -173,21 +164,47 @@ const UserProfile = () => {
                                             placeholder="Enter address"
                                             aria-describedby="basic-addon2"
                                             type='button'
-                                            onClick={handleShow}
+                                            onClick={() => setShow(true)}
                                         />
                                     </InputGroup>
-                                    <Modal
-                                        show={show}
-                                        onHide={handleClose}
-                                        backdrop="static"
-                                        keyboard={false}
-                                        centered
-                                    >
-                                        <Modal.Header>
-                                            <Modal.Title>Address</Modal.Title>
-                                        </Modal.Header>
-                                        <Modal.Body>
-                                            {/* <TextField
+                                    {isLoaded?
+                                        <GetAddress
+                                            show={show}
+                                            onHide={() => setShow(false)}
+                                        />
+                                    :null}
+                                </div>
+                            </div>
+                        </Col>
+                    </Row>
+
+                </div>
+            </div>
+        </>
+    )
+
+    function GetAddress(props) {
+        const autoCompleteRef = useRef();
+        const valueDirection = useRef();
+        useEffect(() => {
+            autoCompleteRef.current = new window.google.maps.places.Autocomplete(
+                valueDirection.current,
+                options
+            );
+        }, []);
+        console.log(props)
+        return (
+            <Modal
+                {...props}
+                backdrop="static"
+                keyboard={false}
+                centered
+            >
+                <Modal.Header>
+                    <Modal.Title>Address</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {/* <TextField
                                                 type="text"
                                                 label="Địa chỉ "
                                                 name="usAddress"
@@ -201,33 +218,25 @@ const UserProfile = () => {
                                                         : null
                                                 }
                                             /> */}
-                                            {isLoaded?
-                                            <input
-                                                type="text"
-                                                label="Địa chỉ giao hàng"
-                                                name="address"
-                                                ref={valueDirection}
-                                                onBlur={(e) => {
-                                                    console.log(valueDirection.current?.value)
-                                                }}
-                                            />:null}
-                                        </Modal.Body>
-                                        <Modal.Footer>
-                                            <Button variant="secondary" onClick={handleClose}>
-                                                Close
-                                            </Button>
-                                            <Button variant="primary">Understood</Button>
-                                        </Modal.Footer>
-                                    </Modal>
-                                </div>
-                            </div>
-                        </Col>
-                    </Row>
-
-                </div>
-            </div>
-        </>
-    )
+                     <input
+                            type="text"
+                            label="Địa chỉ giao hàng"
+                            name="address"
+                            ref={valueDirection}
+                            onBlur={(e) => {
+                                console.log(valueDirection.current?.value)
+                            }}
+                        /> 
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={props.onHide}>
+                        Close
+                    </Button>
+                    <Button variant="primary">Understood</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
 }
 
 export default UserProfile

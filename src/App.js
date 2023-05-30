@@ -5,10 +5,10 @@ import "./fontawesome.js"
 import './App.css';
 import routes from './routes/routes';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import Page404 from './pages/Error/404.jsx';
 import { getUserById } from './redux/User/user_page_thunk.js';
-import { selectUserLoading } from './redux/User/user_page_selecter.js';
+
 
 
 function App() {

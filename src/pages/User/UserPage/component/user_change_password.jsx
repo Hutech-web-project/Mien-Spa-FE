@@ -1,19 +1,61 @@
-import React, { useState } from 'react'
-import { Button, Col, Row } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { Alert, Button, Col, Form, InputGroup, Row } from 'react-bootstrap'
 import "../../../../assets/scss/user_css/user_page/change_password.scss"
 import validate from 'validate.js';
-import { schemaChangePassword } from "../../../../util/validate"
+import { ChangePasswordWord } from "../../../../util/validate"
+import { ToastContainer, toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { selectUser, selectUserError } from '../../../../redux/User/user_page_selecter';
+import { changePassword } from '../../../../redux/User/user_page_thunk';
 
 const UserChangePassword = () => {
+    const user = useSelector(selectUser);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [error,setError] =  useState(useSelector(selectUserError));
+    const [error2,setError2] =  useState(false);
     const [showPassword1, setShowPassword1] = useState(false);
     const [showPassword2, setShowPassword2] = useState(false);
     const [showPassword3, setShowPassword3] = useState(false);
-    const [currentPassword, setCurrentPassword] = useState('');
-    const [newPassword, setNewPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [errors, setErrors] = useState({});
 
+    const [dataChangePassword, setDataChangePassword] = useState({
+        passwordOld: "",
+        passwordNew: "",
+        confirmPassword: "",
+    });
+    const [validation, setValidation] = useState({
+        touched: {},
+        errors: {},
+        isvalid: false,
+    });
+
+    useEffect(() => {
+        const errors = validate.validate(dataChangePassword, ChangePasswordWord);
+        setValidation((pre) => ({
+            ...pre,
+            isvalid: errors ? false : true,
+            errors: errors || {},
+        }));
+    }, [dataChangePassword]);
+
+    const hasError = (field) => {
+        return validation.touched[field] && validation.errors[field] ? true : false;
+    };
+    const handleChange = (event) => {
+        setDataChangePassword((preState) => ({
+            ...preState,
+            [event.target.name]: event.target.value,
+        }));
+        setValidation((pre) => ({
+            ...pre,
+            touched: {
+                ...pre.touched,
+                [event.target.name]: true,
+            },
+        }));
+    };
 
     const toggleShowPassword1 = () => {
         setShowPassword1(!showPassword1);
@@ -26,35 +68,42 @@ const UserChangePassword = () => {
         setShowPassword3(!showPassword3);
     };
 
-    const handleCurrentPasswordChange = event => {
-        setCurrentPassword(event.target.value);
-    };
 
-    const handleNewPasswordChange = event => {
-        setNewPassword(event.target.value);
-    };
-
-    const handleConfirmPasswordChange = event => {
-        setConfirmPassword(event.target.value);
-    };
-
-    const handleSubmit = event => {
-        event.preventDefault();
-
-        const validationErrors = validate(
-            {
-                passwordOld: currentPassword,
-                passwordNew: newPassword,
-                confirmPassword: confirmPassword
+    const handleUpdatePassword = () => {
+        setValidation((pre) => ({
+            ...pre,
+            touched: {
+                ...pre.touched,
+                passwordOld: true,
+                passwordNew: true,
+                confirmPassword: true,
             },
-            schemaChangePassword,
-            { fullMessages: false }
-        );
-
-        if (validationErrors) {
-            setErrors(validationErrors);
-        } else {
-            setErrors();
+        }));
+        if (validation.isvalid === true) {
+            let obj = {
+                newPassword: dataChangePassword.passwordNew,
+                oldPassword: dataChangePassword.passwordOld,
+                userId: user?.usId,
+            };
+            dispatch(changePassword(obj)).then((res) => {
+                console.log("res", res);
+                if (!res.error) {
+                    if(res.payload === 202){
+                        setError(false);
+                        setError2(true);
+                    }else{
+                        const Opass = document.getElementById('passOld');   
+                        Opass.value = ''
+                        const Npass = document.getElementById('passNew');   
+                        Npass.value = ''
+                        const Cpass = document.getElementById('confirmPass');   
+                        Cpass.value = ''
+                        toast.success('Create category success !', {
+                            position: toast.POSITION.TOP_RIGHT
+                        });
+                    }        
+                }
+            });
         }
     };
 
@@ -67,79 +116,88 @@ const UserChangePassword = () => {
                 </div>
                 <hr />
                 <div className='contain'>
-                    <form onSubmit={handleSubmit}>
-                        <div className='card'>
+                    {error === true ? (
+                        <Alert key={'warning'} variant={'warning'}>
+                            Email already exists!
+                        </Alert>
+                    ) : null}
+                    {error2 === true ? (
+                        <Alert key={'warning'} variant={'warning'}>
+                            The new password cannot be the same as the old password!
+                        </Alert>
+                    ) : null}
+                    <Row>
+                        <Col xs={8}>
+                            <InputGroup className="mb-3">
+                                <InputGroup.Text id="basic-addon2">Old password</InputGroup.Text>
+                                <Form.Control
+                                    placeholder="Enter old password"
+                                    aria-describedby="basic-addon2"
+                                    onChange={handleChange}
+                                    name="passwordOld"
+                                    id="passOld"
+                                    type={showPassword1 ? 'text' : 'password'}
+                                    isInvalid={hasError("passwordOld")}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {hasError("passwordOld") ? validation.errors.passwordOld?.[0] : null}
+                                </Form.Control.Feedback>
+                            </InputGroup>
 
-                            <Row>
-                                <Col md={8}>
-                                    <div className='input-form'>
-                                        <label>Current Password</label>
-                                        <div className="form-group pass_show">
-                                            <input type={showPassword1 ? 'text' : 'password'} className="form-control" value={currentPassword} onChange={handleCurrentPasswordChange} />
-                                        </div>
+                        </Col>
+                        <Col xs={4}>
+                            <span onClick={toggleShowPassword1}>{showPassword1 ? <FontAwesomeIcon icon={['fa', 'eye']} className='icon' /> : <FontAwesomeIcon icon={['fa', 'eye-slash']} className='icon' />}</span>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={8}>
+                            <InputGroup className="mb-3">
+                                <InputGroup.Text id="basic-addon2">Old password</InputGroup.Text>
+                                <Form.Control
+                                    placeholder="Enter new password"
+                                    aria-describedby="basic-addon2"
+                                    onChange={handleChange}
+                                    name="passwordNew"
+                                    id="passNew"
+                                    type={showPassword2 ? 'text' : 'password'}
+                                    isInvalid={hasError("passwordNew")}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {hasError("passwordNew") ? validation.errors.passwordNew?.[0] : null}
+                                </Form.Control.Feedback>
+                            </InputGroup>
 
-                                        <span className='icon' onClick={toggleShowPassword1}>{showPassword1 ?<FontAwesomeIcon icon={['fa', 'eye']} /> : <FontAwesomeIcon icon={['fa', 'eye-slash']} />}</span>
-                                    </div>
-                                </Col>
-                                <Col md={4} className='fp'>
-                                    <a href='!#'>Forgot password?</a>
-                                </Col>
+                        </Col>
+                        <Col xs={4}>
+                            <span className='icon' onClick={toggleShowPassword2}>{showPassword2 ? <FontAwesomeIcon icon={['fa', 'eye']} className='icon' /> : <FontAwesomeIcon icon={['fa', 'eye-slash']} className='icon' />}</span>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={8}>
+                            <InputGroup className="mb-3">
+                                <InputGroup.Text id="basic-addon2">Confirm password</InputGroup.Text>
+                                <Form.Control
+                                    placeholder="Enter old password"
+                                    aria-describedby="basic-addon2"
+                                    onChange={handleChange}
+                                    name="confirmPassword"
+                                    id="confirmPass"
+                                    type={showPassword3 ? 'text' : 'password'}
+                                    isInvalid={hasError("confirmPassword")}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {hasError("confirmPassword") ? validation.errors.confirmPassword?.[0] : null}
+                                </Form.Control.Feedback>
+                            </InputGroup>
 
-                            </Row>
-
-                        </div>
-                        <Row className="error-tag">
-                            {errors.passwordOld && <div className='error'>{errors.passwordOld}</div>}
-                        </Row>
-                        <Row>
-                            <div className='card'>
-                                <div className='input-form'>
-                                    <label>New Password</label>
-                                    <div className="form-group pass_show">
-                                        <input type={showPassword2 ? 'text' : 'password'} className="form-control" value={newPassword} onChange={handleNewPasswordChange} />
-                                    </div>
-
-                                    <span className='icon' onClick={toggleShowPassword2}>{showPassword2 ? <FontAwesomeIcon icon={['fa', 'eye']} /> : <FontAwesomeIcon icon={['fa', 'eye-slash']} />}</span>
-                                </div>
-                            </div>
-                            <Row className="error-tag">
-                                 {errors.passwordNew && (
-                                        <div className='row-error'>
-                                            <span className="icon"></span>
-                                            <div>{errors.passwordNew[0]}</div>
-                                            {errors.passwordNew[1] && <div>{errors.passwordNew[1]}</div>}
-                                        </div>
-                                    )}
-                            </Row>
-                        </Row>
-                        <Row>
-                            <div className='card'>
-                                <div className='input-form'>
-                                    <label>Comfirm Password</label>
-                                    <div className="form-group pass_show">
-                                        <input type={showPassword3 ? 'text' : 'password'} className="form-control" value={confirmPassword} onChange={handleConfirmPasswordChange} />
-                                    </div>
-                                    <span className='icon' onClick={toggleShowPassword3}>{showPassword3 ? <FontAwesomeIcon icon={['fa', 'eye']} /> : <FontAwesomeIcon icon={['fa', 'eye-slash']} />}</span>
-                                </div>
-                                <Row className="error-tag">
-                                    {errors.confirmPassword && (
-                                        <div className='row-error'>
-                                            <span className="icon"></span>
-                                            <div>{errors.confirmPassword[0]}</div>
-                                            {errors.confirmPassword[1] && <div>{errors.confirmPassword[1]}</div>}
-                                        </div>
-                                    )}
-                                </Row>
-                            </div>
-                        </Row>
-
-                        <Row>
-                            <div className='sub'>
-                                <Button variant="primary">Change Password</Button>
-                            </div>
-                        </Row>
-                    </form>
+                        </Col>
+                        <Col xs={4}>
+                            <span className='icon' onClick={toggleShowPassword3}>{showPassword3 ? <FontAwesomeIcon icon={['fa', 'eye']} className='icon' /> : <FontAwesomeIcon icon={['fa', 'eye-slash']} className='icon' />}</span>
+                        </Col>
+                    </Row>
+                    <Button variant="primary" onClick={handleUpdatePassword}>Change Password</Button>
                 </div>
+                <ToastContainer />
             </div>
         </>
     )
