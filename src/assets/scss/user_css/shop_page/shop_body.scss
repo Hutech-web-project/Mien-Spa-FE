@@ -40,6 +40,10 @@
                 border-radius: 0;
                 margin-bottom: 25px;
                 
+                .title{
+                    font-size: larger;
+                    font-weight: 500;
+                }
                 .accordion{
                     .accordion-item{
                         border: none;
@@ -75,6 +79,9 @@
                         border: none;
                         box-shadow: none;
                         background-color: #fff;
+                     }
+                     .accordion-collapse{
+                        margin-top: -20px !important;
                      }
                     }
                 }
@@ -135,11 +142,8 @@
            
             .shop__sidebar__categories{
                 ul{
-                    height: 225px;
-
                     li {
                         list-style: none;
-
                         a{
                             color: #b7b7b7;
                             font-size: 15px;
@@ -326,7 +330,7 @@
 
                 .price {
                     color: #303030;
-                    font-size: 15px
+                    font-size: 20px
                 }
             }
         }

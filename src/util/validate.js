@@ -225,74 +225,65 @@ export const ChangePasswordWord = {
         },
     },
 }
-export const schemaProduct = {
+export const ProductPageValidate = {
     proName: {
         presence: {
             allowEmpty: false,
-            message: "^Tên sản phẩm không được trống",
+            message: "^Product name cannot be empty",
         },
         length: {
             minimum: 5,
             maximum: 50,
-            message: "^Tên sản phẩm không được quá ngắn hoặc quá dài",
+            message: "^Product name should not be too short or too long",
         },
         format: {
             pattern: validName,
             flags: "i",
-            message: "^Tên sản phẩm không bao gồm số hoặc kí tự đặc biệt",
+            message: "^Product name does not include numbers or special characters",
         },
     },
     proContent: {
         presence: {
             allowEmpty: false,
-            message: "^Nội dung không được trống",
+            message: "^Content cannot be empty",
         },
         length: {
             minimum: 20,
-            message: "^Nội dung không được quá ngắn",
+            message: "^Content should not be too short",
         }
 
     },
     proBrand: {
         presence: {
             allowEmpty: false,
-            message: "^Nhãn hàng không được trống",
+            message: "^Labels cannot be empty",
         },
         length: {
             minimum: 3,
-            message: "^Nhãn hàng không được quá ngắn",
+            message: "^Labels should not be too short",
         }
 
     },
     proPrice: {
         presence: {
             allowEmpty: false,
-            message: "^Gía tiền không được trống",
+            message: "^Price cannot be empty",
         },
         numericality: {
             notInteger: true,
-            message: "^Gía tiền không bao gồm ký tự hoặc chữ",
+            message: "^Price does not include characters or letters",
 
         },
 
 
 
-    },
-    category_id: {
-        presence: {
-            allowEmpty: false,
-            message: "^Vui lòng chọn thể loại ",
-        },
     },
     featureImgPath: {
         presence: {
             allowEmpty: false,
-            message: "^Vui lòng chọn ảnh ",
+            message: "^Please choose a photo",
         },
     }
-
-
-
 };
 export const schemaService = {
     seName: {
