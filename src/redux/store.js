@@ -11,7 +11,8 @@ const rootReducer = combineReducers({
     BookingPage,
     AuthPage,
     CategoriesPage,
-    UserPage
+    UserPage,
+    ProductPage,
 });
 
 
