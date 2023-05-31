@@ -1,8 +1,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Button, Col, Container, Form, InputGroup, Modal, Pagination, Row, Table, Toast, ToastContainer } from 'react-bootstrap'
-import "../../../assets/scss/admin_css/product_page/product.scss"
-import "../../../util/validate"
+import "../../../assets/scss/admin_css/product.scss"
 import { validate } from 'validate.js'
 import { ProductPageValidate } from '../../../util/validate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -122,40 +121,51 @@ const Product = () => {
                                 show={createShow}
                                 onHide={() => setCreateShow(false)}
                             />
-                            <Table striped bordered hover size="sm">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Price</th>
-                                        <th>Feature_img_path</th>
-                                        <th>Content</th>
-                                        <th>Brand</th>
-                                        <th>turnOn</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {dataListSearch?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((index) => {
-                                        return (
-                                            <tr key={index.proID}>
-                                                <td>{index.proName}</td>
-                                                <td>{index.proPrice}</td>
-                                                <td></td>
-                                                <td>{index.proContent}</td>
-                                                <td>{index.proBrand}</td>
-                                                <td>{convertProParent(index.cateIdParent)}</td>
-                                                <td>
-                                                    <Button className='btn-action' variant="primary" onClick={() => hanldeClickEdit(index)}>Edit</Button>
+                           <Table striped bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Feature_img_path</th>
+                                    <th>Content</th>
+                                    <th>Brand</th>
+                                    {/* <th>turnOn</th> */}
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {dataListSearch?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((index) => {
+                                    return (
+                                        <tr key={index.proId}>
+                                            <td>{index.proId}</td>
+                                            <td>{index.proName}</td>
+                                            <td>{index.proPrice}</td>
+                                            <td><img src={
+                                                process.env.REACT_APP_API_URL +
+                                                "/image/product/" +
+                                                index.featureImgPath} style={{
+                                                    backgroundColor: "#22d3ee",
+                                                    color: "white",
+                                                    borderRadius: "30px",
+                                                    padding: 6,
+                                                    cursor: "pointer",
+                                                    height: 200,
+                                                    width: 200,
+                                                }} alt="" /></td>
+                                            <td>{index.proContent}</td>
+                                            <td>{index.proBrand}</td>
+                                            <td >
+                                                <Button className='btn-action' variant="primary" onClick={() => hanldeClickEdit(index)}>Edit</Button>
 
-                                                    <Button className='btn-action' variant="danger" onClick={() => hanldeDelete(index.cateId)}>Delete</Button>
-
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
-                                </tbody>
-                            </Table>
+                                                <Button className='btn-action' variant="danger" onClick={() => hanldeDelete(index.proId)}>Delete</Button>
+                                                {/* <Button className='btn-action' variant="success" onClick={() => hanldeBlock(index.cateId)}>Delete</Button> */}
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </Table>
                         </Col>
                         <ToastContainer />
                     </Row>

@@ -3,6 +3,7 @@ import BookingIndex from "../pages/User/BookingPage/booking_index";
 import HomeIndex from "../pages/User/HomePage/home_index";
 import ShopIndex from "../pages/User/ShopPage/shop_index";
 import UserIndex from "../pages/User/UserPage/user_index";
+import CartIndex from "../pages/User/CartPage/cart_index";
  const routes = [
   {
     path: "/",
@@ -28,6 +29,11 @@ import UserIndex from "../pages/User/UserPage/user_index";
     path:"/system_mienspa",
     element: <AdminIndex />,
     allowed: 3
+  },
+  {
+    path:"/cart",
+    element: <CartIndex />,
+    allowed: 1
   }
 ];
 

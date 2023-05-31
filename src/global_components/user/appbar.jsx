@@ -59,8 +59,8 @@ const AppBar = (props) => {
                 <Nav.Link className={activePage === 3 ? 'active' : ''} >Service</Nav.Link>
               </Nav >
               <Nav className='nav-collapse-item'>
-                {activePage === 2 ?
-                  <Nav.Link className={activePage === 4 ? 'active' : ''}><FontAwesomeIcon icon={['fas', 'cart-shopping']} /> Cart</Nav.Link>
+                {activePage === 2  || activePage === 4?
+                  <Nav.Link className={activePage === 4 ? 'active' : ''} href="/cart"><FontAwesomeIcon icon={['fas', 'cart-shopping']} /> Cart</Nav.Link>
                   :
                   <Nav.Link className={activePage === 5 ? 'active' : ''} href="/booking"><FontAwesomeIcon icon={['fas', 'calendar-alt']} /> Booking</Nav.Link>}
                 <Nav className='nav_between'></Nav>

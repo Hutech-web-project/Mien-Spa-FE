@@ -50,6 +50,7 @@ const BookingBody = () => {
         <>
             <Container className='booking'>
                 <h4> Booking services</h4>
+                <BookingTime/>
                 <Stepper activeStep={activeStep} orientation="vertical" >
                     {steps.map((step, index) => (
                         <Step key={step.label}>
@@ -59,9 +60,9 @@ const BookingBody = () => {
                             <StepContent>
                                 <Typography>{step.description}</Typography>
                                 <Box sx={{ mb: 2 }}>
-                                    {index === 0 ? <BookingPhone/> : ''}
-                                    {/* {index === 1 ? <BookingPhone/> : ''} */}
-                                    {index === 2 ? <BookingTime/> : ''}
+                                    {/* {index === 0 ? <BookingPhone/> : ''}
+                                    {index === 1 ? <BookingTime/> : ''}  */}
+                                    {index === 0 ? <BookingTime/> : ''}
                                     <div>
                                         <Button
                                             className='btn-next'

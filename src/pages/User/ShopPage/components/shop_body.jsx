@@ -1,14 +1,58 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Accordion, Col, Container, Form, Pagination, Row } from 'react-bootstrap'
 import '../../../../assets/scss/user_css/shop_page/shop_body.scss'
+import { useDispatch } from 'react-redux'
+import { getCategories } from '../../../../redux/Category/category_page_thunk'
+import { getProducts } from '../../../../redux/Product/product_page_thunk'
 const ShopBody = () => {
+  const dispatch = useDispatch();
+  const [dataListCate, setDataListCate] = useState([]);
+  const [dataListPro, setDataListPro] = useState([]);
+  const [dataListSearch, setDataListSearch] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage,] = useState(6);
+  useEffect(() => {
+    dispatch(getCategories()).then((res) => {
+      setDataListCate(res.payload);
+    });
+    dispatch(getProducts()).then((res) => {
+      setDataListPro(res.payload);
+      setDataListSearch(res.payload);
+    });
+  }, [dispatch]);
   const _handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       console.log('do validate');
       e.target.value = '';
     }
   }
+
+  let rows = [];
+  for (let i = 1; i < (dataListSearch.length / rowsPerPage) + 1; i++) {
+    if (i - 1 === page) {
+      rows.push(<Pagination.Item key={i} active onClick={() => ClickPage(i)}>{i}</Pagination.Item>);
+    } else {
+      rows.push(<Pagination.Item key={i} onClick={() => ClickPage(i)}>{i}</Pagination.Item>);
+    }
+  }
+
+  const NextPage = () => {
+    setPage(page + 1);
+  }
+
+  const PrevPage = () => {
+    setPage(page - 1);
+  }
+
+  const ClickPage = (e) => {
+    setPage(e - 1);
+  }
+
+  const hanldeCate = (e) => {
+    setDataListSearch(dataListPro?.filter((cate) => (cate?.category_id === e)))
+  }
+  console.log(dataListPro)
   return (
     <>
       <section className='shop'>
@@ -20,7 +64,7 @@ const ShopBody = () => {
                   <Form className='form' as={Col} >
                     <Form.Group>
                       <Col className='form-item'>
-                        <Form.Control className='form-item-input' type="text" placeholder="Enter email" onError={true} onKeyDown={_handleKeyDown} />
+                        <Form.Control className='form-item-input' type="text" placeholder="Enter email" onKeyDown={_handleKeyDown} />
                         <FontAwesomeIcon className='form-item-icon' icon={['fa', 'search']} />
                       </Col>
                     </Form.Group>
@@ -29,27 +73,39 @@ const ShopBody = () => {
                 <div className="shop-sidebar-accordion">
                   <div className="accordion" id="accordionExample">
                     <div className="card">
+                      <span className="title">Categories</span>
                       <Accordion defaultActiveKey={['0']} alwaysOpen>
-                        <Accordion.Item eventKey="0">
-                          <Accordion.Header>Categories</Accordion.Header>
-                          <Accordion.Body>
-                            <div className="card-body">
-                              <div className="shop__sidebar__categories">
-                                <ul className="nice-scroll">
-                                  <li><a href="!#">Men (20)</a></li>
-                                  <li><a href="!#">Women (20)</a></li>
-                                  <li><a href="!#">Bags (20)</a></li>
-                                  <li><a href="!#">Clothing (20)</a></li>
-                                  <li><a href="!#">Shoes (20)</a></li>
-                                  <li><a href="!#">Accessories (20)</a></li>
-                                  <li><a href="!#">Kids (20)</a></li>
-                                  <li><a href="!#">Kids (20)</a></li>
-                                  <li><a href="!#">Kids (20)</a></li>
-                                </ul>
-                              </div>
-                            </div>
-                          </Accordion.Body>
-                        </Accordion.Item>
+                        {React.Children.toArray(dataListCate.map((item, index) => {
+                          let id = 0;
+                          if (item.cateIdParent === 0) {
+                            id = item.cateId;
+                            return (
+                              <>
+                                <Accordion.Item eventKey={index.toString()}>
+                                  <Accordion.Header>{item.cateName}</Accordion.Header>
+                                  <Accordion.Body>
+                                    <div className="card-body">
+                                      <div className="shop__sidebar__categories">
+                                        <ul className="nice-scroll">
+                                          <li><a href="!#" onClick={() => hanldeCate(item.cateId)}>All products in {item.cateName}</a></li>
+                                          {
+                                            React.Children.toArray(dataListCate.map((chilItem) => {
+                                              if (chilItem.cateIdParent === id) {
+                                                return <li><a href="!#" onClick={() => hanldeCate(chilItem.cateId)}>{chilItem.cateName}</a></li>;
+                                              }
+                                              return null;
+                                            }))
+                                          }
+                                        </ul>
+                                      </div>
+                                    </div>
+                                  </Accordion.Body>
+                                </Accordion.Item>
+                              </>
+                            )
+                          }
+                          return null;
+                        }))}
                       </Accordion>
                     </div>
                   </div>
@@ -58,126 +114,75 @@ const ShopBody = () => {
             </Col>
             <Col md={9} sm={12} xs={12}>
               <Row className='demo' >
-                <Col sx={12} md={'auto'} sm={'auto'}>
-                  <Col className='product-grid2'>
-                    <div className="product-image2">
-                      <div className='product-image2-item'>
-                        <a href="!#">
-                          <img className="pic-1" src={require('../../../../assets/images/bongtaytrang_ipek.jpg')} alt='pic-1' />
-                          <img className="pic-2" src={require('../../../../assets/images/bongtaytrang_ipek.jpg')} alt='pic-2' />
-                        </a>
-                      </div>
-                      <ul className="social">
-                        <li><a href="!#" data-tip="Quick View"><FontAwesomeIcon icon={['fa', 'eye']} /></a></li>
-                        <li><a href="!#" data-tip="Add to Wishlist"><FontAwesomeIcon icon={['fa', 'heart']} /></a></li>
-                        <li><a href="!#" data-tip="Add to Cart"><FontAwesomeIcon icon={['fa', 'cart-shopping']} /></a></li>
-                      </ul>
-                      <a className="add-to-cart" href="!#">Add to cart</a>
-                    </div>
-                    <div className="product-content">
-                      <h3 className="title"><a href="!#">Women's Designer Top</a></h3>
-                      <span className="price">$599.99</span>
-                    </div>
-                  </Col>
-                </Col>
-                <Col sx={12} md={'auto'} sm={'auto'}>
-                  <Col className='product-grid2'>
-                    <div className="product-image2">
-                      <div className='product-image2-item'>
-                        <a href="!#">
-                          <img className="pic-1" src={require('../../../../assets/images/bongtaytrang_simple.jpg')} alt='pic-1' />
-                          <img className="pic-2" src={require('../../../../assets/images/bongtaytrang_simple.jpg')} alt='pic-2' />
-                        </a>
-                      </div>
-                      <ul className="social">
-                        <li><a href="!#" data-tip="Quick View"><FontAwesomeIcon icon={['fa', 'eye']} /></a></li>
-                        <li><a href="!#" data-tip="Add to Wishlist"><FontAwesomeIcon icon={['fa', 'heart']} /></a></li>
-                        <li><a href="!#" data-tip="Add to Cart"><FontAwesomeIcon icon={['fa', 'cart-shopping']} /></a></li>
-                      </ul>
-                      <a className="add-to-cart" href="!#">Add to cart</a>
-                    </div>
-                    <div className="product-content">
-                      <h3 className="title"><a href="!#">Women's Designer Top</a></h3>
-                      <span className="price">$599.99</span>
-                    </div>
-                  </Col>
-                </Col>
-                <Col sx={12} md={'auto'} sm={'auto'}>
-                  <Col className='product-grid2'>
-                    <div className="product-image2">
-                      <div className='product-image2-item'>
-                        <a href="!#">
-                          <img className="pic-1" src={require('../../../../assets/images/bongtaytrang_ipek.jpg')} alt='pic-1' />
-                          <img className="pic-2" src={require('../../../../assets/images/bongtaytrang_ipek.jpg')} alt='pic-2' />
-                        </a>
-                      </div>
-                      <ul className="social">
-                        <li><a href="!#" data-tip="Quick View"><FontAwesomeIcon icon={['fa', 'eye']} /></a></li>
-                        <li><a href="!#" data-tip="Add to Wishlist"><FontAwesomeIcon icon={['fa', 'heart']} /></a></li>
-                        <li><a href="!#" data-tip="Add to Cart"><FontAwesomeIcon icon={['fa', 'cart-shopping']} /></a></li>
-                      </ul>
-                      <a className="add-to-cart" href="!#">Add to cart</a>
-                    </div>
-                    <div className="product-content">
-                      <h3 className="title"><a href="!#">Women's Designer Top</a></h3>
-                      <span className="price">$599.99</span>
-                    </div>
-                  </Col>
-                </Col>
-                <Col sx={12} md={'auto'} sm={'auto'}>
-                  <Col className='product-grid2'>
-                    <div className="product-image2">
-                      <div className='product-image2-item'>
-                        <a href="!#">
-                          <img className="pic-1" src={require('../../../../assets/images/bongtaytrang_simple.jpg')} alt='pic-1' />
-                          <img className="pic-2" src={require('../../../../assets/images/bongtaytrang_simple.jpg')} alt='pic-2' />
-                        </a>
-                      </div>
-                      <ul className="social">
-                        <li><a href="!#" data-tip="Quick View"><FontAwesomeIcon icon={['fa', 'eye']} /></a></li>
-                        <li><a href="!#" data-tip="Add to Wishlist"><FontAwesomeIcon icon={['fa', 'heart']} /></a></li>
-                        <li><a href="!#" data-tip="Add to Cart"><FontAwesomeIcon icon={['fa', 'cart-shopping']} /></a></li>
-                      </ul>
-                      <a className="add-to-cart" href="!#">Add to cart</a>
-                    </div>
-                    <div className="product-content">
-                      <h3 className="title"><a href="!#">Women's Designer Top</a></h3>
-                      <span className="price">$599.99</span>
-                    </div>
-                  </Col>
-                </Col>
-                <Col sx={12} md={'auto'} sm={'auto'}>
-                  <Col className='product-grid2'>
-                    <div className="product-image2">
-                      <div className='product-image2-item'>
-                        <a href="!#">
-                          <img className="pic-1" src={require('../../../../assets/images/bongtaytrang_ipek.jpg')} alt='pic-1' />
-                          <img className="pic-2" src={require('../../../../assets/images/bongtaytrang_ipek.jpg')} alt='pic-2' />
-                        </a>
-                      </div>
-                      <ul className="social">
-                        <li><a href="!#" data-tip="Quick View"><FontAwesomeIcon icon={['fa', 'eye']} /></a></li>
-                        <li><a href="!#" data-tip="Add to Wishlist"><FontAwesomeIcon icon={['fa', 'heart']} /></a></li>
-                        <li><a href="!#" data-tip="Add to Cart"><FontAwesomeIcon icon={['fa', 'cart-shopping']} /></a></li>
-                      </ul>
-                      <a className="add-to-cart" href="!#">Add to cart</a>
-                    </div>
-                    <div className="product-content">
-                      <h3 className="title"><a href="!#">Women's Designer Top</a></h3>
-                      <span className="price">$599.99</span>
-                    </div>
-                  </Col>
-                </Col>
+                {React.Children.toArray(dataListSearch?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => {
+                  if (item.isDelete === false) {
+                    if (item.proTurnOn === false) {
+                      return (
+                        <Col sx={12} md={'auto'} sm={'auto'} key={index}>
+                          <Col className='product-grid2'>
+                            <div className="product-image2">
+                              <div className='product-image2-item'>
+                                <a href="!#">
+                                  <img className="pic-1" src={
+                                    process.env.REACT_APP_API_URL +
+                                    "/image/product/" +
+                                    item.featureImgPath} alt='pic-1' />
+                                  <img className="pic-2" src={
+                                    process.env.REACT_APP_API_URL +
+                                    "/image/product/" +
+                                    item.featureImgPath} alt='pic-2' />
+                                </a>
+                              </div>
+                              <ul className="social">
+                                <li><a href="!#" data-tip="Quick View"><FontAwesomeIcon icon={['fa', 'eye']} /></a></li>
+                                <li><a href="!#" data-tip="Add to Wishlist"><FontAwesomeIcon icon={['fa', 'heart']} /></a></li>
+                                <li><a href="!#" data-tip="Add to Cart"><FontAwesomeIcon icon={['fa', 'cart-shopping']} /></a></li>
+                              </ul>
+                              <a className="add-to-cart" href="!#">Add to cart</a>
+                            </div>
+                            <div className="product-content">
+                              <h3 className="title"><a href="!#">{item.proName}</a></h3>
+                              <span className="price">{item.proPrice} $</span>
+                            </div>
+                          </Col>
+                        </Col>
+                      )
+                    } else {
+                      return (
+                        <Col sx={12} md={'auto'} sm={'auto'}>
+                          <Col className='product-grid2'>
+                            <div className="product-image2">
+                              <div className='product-image2-item'>
+                                <a href="!#">
+                                  <img className="pic-1" src={
+                                    process.env.REACT_APP_API_URL +
+                                    "/image/product/" +
+                                    item.featureImgPath} alt='' />
+                                </a>
+                              </div>
+                            </div>
+                            <div className="product-content">
+                              <h3 className="title"><a href="!#">{item.proName}</a></h3>
+                              <span className="price" style={{ color: "red" }}>Out of stock</span>
+                            </div>
+                          </Col>
+                        </Col>
+                      )
+                    }
+                  }
+                }))}
               </Row>
             </Col>
             <Col>
-              <Pagination >
-                <Pagination.First />
-                <Pagination.Item>{1}</Pagination.Item>
-                <Pagination.Item active>{2}</Pagination.Item>
-                <Pagination.Item>{3}</Pagination.Item>
-                <Pagination.Last />
-              </Pagination>
+              {Math.floor(dataListSearch.length / rowsPerPage) !== 0 ?
+                <Col >
+                  <Pagination>
+                    {page === 0 ? <Pagination.Prev onClick={PrevPage} disabled /> : <Pagination.Prev onClick={PrevPage} />}
+                    {rows}
+                    {page === Math.floor(dataListCate.length / rowsPerPage) ? <Pagination.Next onClick={NextPage} disabled /> : <Pagination.Next onClick={NextPage} />}
+                  </Pagination>
+                </Col> : null
+              }
             </Col>
           </Row>
         </Container>

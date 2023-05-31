@@ -7,6 +7,7 @@ import BookingPage  from './Booking/booking_page_reducer';
 import AuthPage  from './Auth/auth_page_reducer';
 import CategoriesPage  from './Category/category_page_reducer';
 import UserPage  from './User/user_page_reducer';
+import ProductPage  from './Product/product_page_reducer';
 const rootReducer = combineReducers({
     BookingPage,
     AuthPage,
