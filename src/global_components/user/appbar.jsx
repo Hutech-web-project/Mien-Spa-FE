@@ -9,8 +9,9 @@ import { LoginPageValidate, RegisterPageValidate } from '../../util/validate'
 import { login, register } from "../../redux/Auth/auth_page_thunk";
 import { selectError, selectLoading } from '../../redux/Auth/auth_page_selecter'
 import { logout, turnOffError } from '../../redux/Auth/auth_page_reducer'
-import { selectUser, selectUserLoading } from '../../redux/User/user_page_selecter'
+import { selectUser } from '../../redux/User/user_page_selecter'
 import { ToastContainer, toast } from 'react-toastify'
+import { selectCartPro } from '../../redux/Cart/cart_page_selecter'
 
 const delay = ms => new Promise(
   resolve => setTimeout(resolve, ms)
@@ -19,6 +20,7 @@ const delay = ms => new Promise(
 const AppBar = (props) => {
   const dispatch = useDispatch();
   const [show, setShow] = useState(false);
+  const cartList = useSelector(selectCartPro);
   const [activePage, setActivePage] = useState(props.id);
 
   const user = useSelector(selectUser);
@@ -60,7 +62,7 @@ const AppBar = (props) => {
               </Nav >
               <Nav className='nav-collapse-item'>
                 {activePage === 2  || activePage === 4?
-                  <Nav.Link className={activePage === 4 ? 'active' : ''} href="/cart"><FontAwesomeIcon icon={['fas', 'cart-shopping']} /> Cart</Nav.Link>
+                  <Nav.Link className={activePage === 4 ? 'active' : ''} href="/cart"><FontAwesomeIcon icon={['fas', 'cart-shopping']} /> Cart ({cartList.length})</Nav.Link>
                   :
                   <Nav.Link className={activePage === 5 ? 'active' : ''} href="/booking"><FontAwesomeIcon icon={['fas', 'calendar-alt']} /> Booking</Nav.Link>}
                 <Nav className='nav_between'></Nav>
@@ -183,7 +185,7 @@ const AppBar = (props) => {
               if (res.payload?.roles.some((rol) => rol === "ROLE_USER") === true) {
                 navigate(0)
               } else {
-                navigate('/system_mienspa')
+                window.location = '/system_mienspa'
               }
             }
 

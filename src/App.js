@@ -45,12 +45,12 @@ function App() {
               } path={route.path} key={route.path}></Route>:
                route.allowed === 2?
                <Route element={
-                user?.listRole.some((rol)=>rol ==="ROLE_USER") === true && idUser !== null?
+                user?.listRole.some((rol)=>rol ==="ROLE_USER") === true ?
                  route.element:<Page404 path={"/"}/>
               } path={route.path} key={route.path}></Route>:
                route.allowed === 3?
                <Route element={
-                user?.listRole.some((rol)=>rol !=="ROLE_USER") === true && idUser !== null?
+                idUser !== null && user?.listRole.some((rol)=>rol !=="ROLE_USER") === true ?
                 route.element:<Page404 path={"/"}/>
               } path={route.path} key={route.path}></Route>
                :null

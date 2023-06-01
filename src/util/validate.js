@@ -1,18 +1,18 @@
 const validPasswordAdmin = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
 const validPasswordUser = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
 const validName = /^([a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s]+)$/i
-const validAddress = /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ0-9\s,/()-.]*$/i
-const valiDob = /^[0-9]{2}[/]{1}[0-9]{2}[/]{1}[0-9]{4}$/i
+const validPhone = /((^(\+84|84|0|0084){1})(3|5|7|8|9))+([0-9]{8})$/i
+const valiDob = /^((^(\+84|84|0|0084){1})(3|5|7|8|9))+([0-9]{8})$/i
 export const UserPage = {
     usUserName: {
         presence: {
             allowEmpty: false,
-            message: "^Họ và tên không được trống",
+            message: "^First and last name cannot be blank",
         },
         format: {
             pattern: validName,
             flags: "i",
-            message: "^Họ và tên không bao gồm số",
+            message: "^First and last name do not include number",
         },
     },
     usDob: {
@@ -27,71 +27,63 @@ export const UserPage = {
         },
 
     },
-    usAddress: {
-        presence: {
-            allowEmpty: false,
-            message: "^Địa chỉ không được trống",
-        },
-        length: {
-            minimum: 15,
-            message: "^Địa chỉ  quá ngắn",
-        },
-        format: {
-            pattern: validAddress,
-            flags: "i",
-            message: "^Địa chỉ không bao gồm ký tự đặc biệt ngoài ' / '",
-        },
-
-    },
     usPhoneNo: {
         presence: {
             allowEmpty: false,
-            message: "^Số điện thoại không được trống",
+            message: "^Phone number cannot be empty",
         },
         numericality: {
             notInteger: true,
-            message: "^Số điện thoại không bao gồm ký tự hoặc chữ",
+            message: "^Phone number does not include characters or letters",
         },
         length: {
             minimum: 10,
             maximum: 10,
-            message: "^Số điện thoại phải có 10 số",
+            message: "^Phone number must have 10 digits",
         },
 
     },
 };
-export const schemaInforOrder = {
-    address: {
+export const OrderPage = {
+    orProAddress: {
         presence: {
             allowEmpty: false,
-            message: "^Địa chỉ không được trống",
-        },
-        length: {
-            minimum: 15,
-            message: "^Địa chỉ quá ngắn",
-        },
-        format: {
-            pattern: validAddress,
-            flags: "i",
-            message: "^Địa chỉ không bao gồm ký tự đặc biệt ngoài ' / '",
+            message: "^Address cannot be empty",
         },
     },
 
-    phone: {
+    orProPhoneNo: {
         presence: {
             allowEmpty: false,
-            message: "^Số điện thoại không được trống",
+            message: "^Phone number cannot be empty",
         },
         numericality: {
             notInteger: true,
-            message: "^Số điện thoại không bao gồm ký tự hoặc chữ",
+            message: "^Phone number does not include characters or letters",
         },
         length: {
             minimum: 10,
             maximum: 10,
-            message: "^Số điện thoại phải có 10 số",
+            message: "^Phone number must have 10 digits",
+        },
+        format: {
+            pattern: validPhone,
+            ags: "i",
+            message: '^This phone number is incorrect',
         },
 
+    },
+
+    orProUserName: {
+        presence: {
+            allowEmpty: false,
+            message: "^First and last name cannot be blank",
+        },
+        format: {
+            pattern: validName,
+            flags: "i",
+            message: "^First and last name do not include number",
+        },
     },
 }
 export const BookingPagevalidate = {
@@ -101,7 +93,8 @@ export const BookingPagevalidate = {
             message: "^Phone number can not be left blank",
         },
         format: {
-            pattern: /^((^(\+84|84|0|0084){1})(3|5|7|8|9))+([0-9]{8})$/,
+            pattern: validPhone,
+            ags: "i",
             message: '^This phone number is incorrect',
         },
     },
@@ -225,7 +218,7 @@ export const ChangePasswordWord = {
         },
     },
 }
-export const ProductPageValidate = {
+export const ProductPageValidatePost = {
     proName: {
         presence: {
             allowEmpty: false,
@@ -283,6 +276,73 @@ export const ProductPageValidate = {
             allowEmpty: false,
             message: "^Please choose a photo",
         },
+    },
+    category_id:{
+        presence: {
+            allowEmpty: false,
+            message: "^Please choose category",
+        },
+    }
+};
+
+export const ProductPageValidatePut = {
+    proName: {
+        presence: {
+            allowEmpty: false,
+            message: "^Product name cannot be empty",
+        },
+        length: {
+            minimum: 5,
+            maximum: 50,
+            message: "^Product name should not be too short or too long",
+        },
+        format: {
+            pattern: validName,
+            flags: "i",
+            message: "^Product name does not include numbers or special characters",
+        },
+    },
+    proContent: {
+        presence: {
+            allowEmpty: false,
+            message: "^Content cannot be empty",
+        },
+        length: {
+            minimum: 20,
+            message: "^Content should not be too short",
+        }
+
+    },
+    proBrand: {
+        presence: {
+            allowEmpty: false,
+            message: "^Labels cannot be empty",
+        },
+        length: {
+            minimum: 3,
+            message: "^Labels should not be too short",
+        }
+
+    },
+    proPrice: {
+        presence: {
+            allowEmpty: false,
+            message: "^Price cannot be empty",
+        },
+        numericality: {
+            notInteger: true,
+            message: "^Price does not include characters or letters",
+
+        },
+
+
+
+    },
+    category_id:{
+        presence: {
+            allowEmpty: false,
+            message: "^Please choose category",
+        },
     }
 };
 export const schemaService = {
@@ -336,12 +396,7 @@ export const schemaService = {
 
 
     },
-    seImage: {
-        presence: {
-            allowEmpty: false,
-            message: "^Vui lòng chọn ảnh ",
-        },
-    }
+   
 
 
 
@@ -353,7 +408,7 @@ export const CategoriesPageValidate = {
             message: "^Category name cannot be left blank",
         },
         length: {
-            minimum: 5,
+            minimum: 3,
             maximum: 30,
             message: "^Category names can't be too short or too long",
         },

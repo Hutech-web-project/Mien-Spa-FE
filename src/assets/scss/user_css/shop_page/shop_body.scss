@@ -43,6 +43,19 @@
                 .title{
                     font-size: larger;
                     font-weight: 500;
+                }       
+                .getAll{
+                    margin-left: 20px;
+                    color: #111111;
+                    font-size: 16px;
+                    font-weight: 700;
+                    -webkit-transition: all, 0.3s;
+                    -o-transition: all, 0.3s;
+                    transition: all, 0.3s;
+                    text-decoration: none
+                }
+                .getAll:hover {
+                    color: #111111;
                 }
                 .accordion{
                     .accordion-item{
@@ -165,6 +178,7 @@
 
     .demo {
         margin-top: 45px;
+       
 
         .product-grid2 {
             font-family: 'Open Sans', sans-serif;
@@ -370,6 +384,12 @@
             // .product-new-label {
             //     opacity: 0
             // }
+        }
+
+        .mess{
+            padding-top: 100px;
+            text-align: center;
+            font-size: 20px;
         }
 
         @media screen and (max-width:990px) {

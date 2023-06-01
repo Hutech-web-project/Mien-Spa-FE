@@ -8,19 +8,27 @@ import AuthPage  from './Auth/auth_page_reducer';
 import CategoriesPage  from './Category/category_page_reducer';
 import UserPage  from './User/user_page_reducer';
 import ProductPage  from './Product/product_page_reducer';
+import CartPage  from './Cart/cart_page_reducer';
+import StoragePage from './Storage/storage_page_reducer';
+import OrderProPage from './OrderPro/order_page_reducer';
+import ServicesPage  from './Service/service_page_reducer';
 const rootReducer = combineReducers({
     BookingPage,
     AuthPage,
     CategoriesPage,
     UserPage,
     ProductPage,
+    CartPage,
+    StoragePage,
+    OrderProPage,
+    ServicesPage,
 });
 
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: [""],
+  whitelist: ["CartPage"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

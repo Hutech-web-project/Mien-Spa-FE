@@ -1,5 +1,5 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { changePassword, getAllUser, getUserById, getUserByIdAdmin, postUser, updatePassword } from "./user_page_thunk";
+import { changePassword, getAllUser, getUserById, getUserByIdAdmin, postUser, putUser, updatePassword } from "./user_page_thunk";
 
 
 const initialState = {
@@ -14,7 +14,9 @@ export const UserPage = createSlice({
     name: "user",
     initialState,
     reducers: {
-
+      AddAdress: (state, action) => {
+        state.usAddress = action.payload;
+      },
     },
     extraReducers: (builder) => {
           builder.addCase(getAllUser.fulfilled, (state, action) => {
@@ -28,6 +30,7 @@ export const UserPage = createSlice({
               getAllUser.rejected,
               getUserByIdAdmin.rejected,
               postUser.rejected,
+              putUser.rejected,
             //   fetchAllRole.rejected,
             //   postRole.rejected,
               changePassword.rejected
@@ -50,6 +53,7 @@ export const UserPage = createSlice({
                 postUser.fulfilled,
                 updatePassword.fulfilled,
                 changePassword.fulfilled,
+                putUser.fulfilled,
             ),
             (state,) => {
               state.isLoading = false;
@@ -63,7 +67,8 @@ export const UserPage = createSlice({
               postUser.pending,
               updatePassword.pending,
               getUserByIdAdmin.pending,
-              changePassword.pending
+              changePassword.pending,
+              putUser.pending,
             ),
             (state, action) => {
               state.isLoading = true;
@@ -71,5 +76,7 @@ export const UserPage = createSlice({
           );   
         },
 });
-
+export const {
+  AddAdress
+} = UserPage.actions;
 export default UserPage.reducer;
