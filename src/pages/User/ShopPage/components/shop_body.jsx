@@ -2,9 +2,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
 import { Accordion, Col, Container, Form, Pagination, Row } from 'react-bootstrap'
 import '../../../../assets/scss/user_css/shop_page/shop_body.scss'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { getCategories } from '../../../../redux/Category/category_page_thunk'
 import { getProducts } from '../../../../redux/Product/product_page_thunk'
+import { addToCart } from '../../../../redux/Cart/cart_page_reducer'
+import { selectCartPro } from '../../../../redux/Cart/cart_page_selecter'
+import { ToastContainer, toast } from 'react-toastify'
 const ShopBody = () => {
   const dispatch = useDispatch();
   const [dataListCate, setDataListCate] = useState([]);
@@ -12,6 +15,8 @@ const ShopBody = () => {
   const [dataListSearch, setDataListSearch] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage,] = useState(6);
+  const [search, setSearch] = useState("");
+  const cartList = useSelector(selectCartPro);
   useEffect(() => {
     dispatch(getCategories()).then((res) => {
       setDataListCate(res.payload);
@@ -21,6 +26,13 @@ const ShopBody = () => {
       setDataListSearch(res.payload);
     });
   }, [dispatch]);
+  useEffect(() => {
+    if (search !== null) {
+      setDataListSearch(dataListPro?.filter((pro) => (pro?.proName.toLowerCase()).includes(search.toLowerCase())));
+    } else {
+      setDataListSearch(dataListPro);
+    }
+  }, [search, dataListPro])
   const _handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       console.log('do validate');
@@ -50,9 +62,50 @@ const ShopBody = () => {
   }
 
   const hanldeCate = (e) => {
-    setDataListSearch(dataListPro?.filter((cate) => (cate?.category_id === e)))
+    if (parseInt(e) !== 0) {
+      setDataListSearch(dataListPro?.filter((pro) => (pro?.category_id === parseInt(e))))
+    } else {
+      setDataListSearch(dataListPro);
+    }
   }
-  console.log(dataListPro)
+
+  const hanldeSearch = (e) => {
+    setSearch(e.target.value);
+  }
+
+  const hanldeAddCart=(e)=>{
+      let quantity = 1;
+      let cart = {
+        proProductName: e.proName,
+        proProductPrice: e.proPrice,
+        proQuantity: quantity,
+        productId: e.proId,
+      }
+    
+    const quantityOnCart = cartList?.find((item) =>item?.productId === e.proId);
+    if(quantityOnCart !== undefined){
+      if (quantityOnCart?.proQuantity >= 10) {
+        toast.error('Add product fail !', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 600
+        });
+      } else {
+        quantity = quantityOnCart?.proQuantity + 1;
+        cart.proQuantity  = quantity;
+        dispatch(addToCart({ ...cart}));
+        toast.success('Add product success !', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 600
+        });
+      }
+    }else{
+      dispatch(addToCart({ ...cart}));
+      toast.success('Add product success !', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 600
+      });
+    }
+  }
   return (
     <>
       <section className='shop'>
@@ -64,7 +117,7 @@ const ShopBody = () => {
                   <Form className='form' as={Col} >
                     <Form.Group>
                       <Col className='form-item'>
-                        <Form.Control className='form-item-input' type="text" placeholder="Enter email" onKeyDown={_handleKeyDown} />
+                        <Form.Control className='form-item-input' type="text" placeholder="Search product" onChange={hanldeSearch} onKeyDown={_handleKeyDown} />
                         <FontAwesomeIcon className='form-item-icon' icon={['fa', 'search']} />
                       </Col>
                     </Form.Group>
@@ -75,6 +128,7 @@ const ShopBody = () => {
                     <div className="card">
                       <span className="title">Categories</span>
                       <Accordion defaultActiveKey={['0']} alwaysOpen>
+                        <a href="#!" onClick={() => hanldeCate(0)} className="getAll">All</a>
                         {React.Children.toArray(dataListCate.map((item, index) => {
                           let id = 0;
                           if (item.cateIdParent === 0) {
@@ -87,11 +141,11 @@ const ShopBody = () => {
                                     <div className="card-body">
                                       <div className="shop__sidebar__categories">
                                         <ul className="nice-scroll">
-                                          <li><a href="!#" onClick={() => hanldeCate(item.cateId)}>All products in {item.cateName}</a></li>
+                                          <li><a href="#!" onClick={() => hanldeCate(item.cateId)}>All products in {item.cateName}</a></li>
                                           {
                                             React.Children.toArray(dataListCate.map((chilItem) => {
                                               if (chilItem.cateIdParent === id) {
-                                                return <li><a href="!#" onClick={() => hanldeCate(chilItem.cateId)}>{chilItem.cateName}</a></li>;
+                                                return <li><a href="#!" onClick={() => hanldeCate(chilItem.cateId)}>{chilItem.cateName}</a></li>;
                                               }
                                               return null;
                                             }))
@@ -114,63 +168,66 @@ const ShopBody = () => {
             </Col>
             <Col md={9} sm={12} xs={12}>
               <Row className='demo' >
-                {React.Children.toArray(dataListSearch?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => {
-                  if (item.isDelete === false) {
-                    if (item.proTurnOn === false) {
-                      return (
-                        <Col sx={12} md={'auto'} sm={'auto'} key={index}>
-                          <Col className='product-grid2'>
-                            <div className="product-image2">
-                              <div className='product-image2-item'>
-                                <a href="!#">
-                                  <img className="pic-1" src={
-                                    process.env.REACT_APP_API_URL +
-                                    "/image/product/" +
-                                    item.featureImgPath} alt='pic-1' />
-                                  <img className="pic-2" src={
-                                    process.env.REACT_APP_API_URL +
-                                    "/image/product/" +
-                                    item.featureImgPath} alt='pic-2' />
-                                </a>
+                {dataListSearch.length > 0 ?
+                  React.Children.toArray(dataListSearch?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => {
+                    if (item.isDelete === false) {
+                      if (item.proTurnOn === false) {
+                        return (
+                          <Col sx={12} md={'auto'} sm={'auto'} key={index}>
+                            <Col className='product-grid2'>
+                              <div className="product-image2">
+                                <div className='product-image2-item'>
+                                  <a href="!#">
+                                    <img className="pic-1" src={
+                                      process.env.REACT_APP_API_URL +
+                                      "/image/product/" +
+                                      item.featureImgPath} alt='pic-1' />
+                                    <img className="pic-2" src={
+                                      process.env.REACT_APP_API_URL +
+                                      "/image/product/" +
+                                      item.featureImgPath} alt='pic-2' />
+                                  </a>
+                                </div>
+                                <ul className="social">
+                                  <li><a href="#!" data-tip="Quick View"><FontAwesomeIcon icon={['fa', 'eye']} /></a></li>
+                                  <li><a href="#!" data-tip="Add to Wishlist"><FontAwesomeIcon icon={['fa', 'heart']} /></a></li>
+                                  <li><a href="#!" data-tip="Add to Cart"><FontAwesomeIcon icon={['fa', 'cart-shopping']} /></a></li>
+                                </ul>
+                                <a className="add-to-cart" href="#!" onClick={()=>hanldeAddCart(item)}>Add to cart</a>
                               </div>
-                              <ul className="social">
-                                <li><a href="!#" data-tip="Quick View"><FontAwesomeIcon icon={['fa', 'eye']} /></a></li>
-                                <li><a href="!#" data-tip="Add to Wishlist"><FontAwesomeIcon icon={['fa', 'heart']} /></a></li>
-                                <li><a href="!#" data-tip="Add to Cart"><FontAwesomeIcon icon={['fa', 'cart-shopping']} /></a></li>
-                              </ul>
-                              <a className="add-to-cart" href="!#">Add to cart</a>
-                            </div>
-                            <div className="product-content">
-                              <h3 className="title"><a href="!#">{item.proName}</a></h3>
-                              <span className="price">{item.proPrice} $</span>
-                            </div>
-                          </Col>
-                        </Col>
-                      )
-                    } else {
-                      return (
-                        <Col sx={12} md={'auto'} sm={'auto'}>
-                          <Col className='product-grid2'>
-                            <div className="product-image2">
-                              <div className='product-image2-item'>
-                                <a href="!#">
-                                  <img className="pic-1" src={
-                                    process.env.REACT_APP_API_URL +
-                                    "/image/product/" +
-                                    item.featureImgPath} alt='' />
-                                </a>
+                              <div className="product-content">
+                                <h3 className="title"><a href="#!">{item.proName}</a></h3>
+                                <span className="price">{item.proPrice} $</span>
                               </div>
-                            </div>
-                            <div className="product-content">
-                              <h3 className="title"><a href="!#">{item.proName}</a></h3>
-                              <span className="price" style={{ color: "red" }}>Out of stock</span>
-                            </div>
+                            </Col>
                           </Col>
-                        </Col>
-                      )
+                        )
+                      } else {
+                        return (
+                          <Col sx={12} md={'auto'} sm={'auto'}>
+                            <Col className='product-grid2'>
+                              <div className="product-image2">
+                                <div className='product-image2-item'>
+                                  <a href="#!">
+                                    <img className="pic-1" src={
+                                      process.env.REACT_APP_API_URL +
+                                      "/image/product/" +
+                                      item.featureImgPath} alt='' />
+                                  </a>
+                                </div>
+                              </div>
+                              <div className="product-content">
+                                <h3 className="title"><a href="#!">{item.proName}</a></h3>
+                                <span className="price" style={{ color: "red" }}>Out of stock</span>
+                              </div>
+                            </Col>
+                          </Col>
+                        )
+                      }
                     }
-                  }
-                }))}
+                    return null;
+                  })) :
+                  <span className="mess">No products found</span>}
               </Row>
             </Col>
             <Col>
@@ -185,6 +242,7 @@ const ShopBody = () => {
               }
             </Col>
           </Row>
+          <ToastContainer />
         </Container>
 
       </section>

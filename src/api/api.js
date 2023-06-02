@@ -76,6 +76,7 @@ api.interceptors.response.use(null, function (error) {
         .catch((err) => {
           reject(console.log("err", err));
           store.dispatch(logout());
+          window.location = "/";
         });
     });
   }

@@ -258,6 +258,13 @@ function AddCategory(props) {
     }));
   }
   const handlePostCate = () => {
+    setValidationPost((pre) => ({
+      ...pre,
+      touched: {
+        ...pre.touched,
+        cateName: true,
+      },
+    }));
     if (validationPost.isvalid === true && checkDuplicatePost === false) {
       setValidationPost((pre) => ({
         ...pre,
@@ -276,12 +283,14 @@ function AddCategory(props) {
             }));
           });
           toast.success('Create category success !', {
-            position: toast.POSITION.TOP_RIGHT
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 600
           });
           props.onHide();
         } else {
           toast.error('Create category fail !', {
-            position: toast.POSITION.TOP_RIGHT
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 600
           });
           props.onHide();
         }
@@ -438,7 +447,7 @@ function EditCategory(props) {
   }
 
   const handlePutCate = () => {
-    if (validationPut.isvalid === true === true && checkDuplicatePut === false) {
+    if (validationPut.isvalid === true && checkDuplicatePut === false) {
       setValidationPut((pre) => ({
         ...pre,
         touched: {
@@ -453,12 +462,14 @@ function EditCategory(props) {
             setDataListCate(res2.payload);
           });
           toast.success('Update category success !', {
-            position: toast.POSITION.TOP_RIGHT
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 600
           });
           props.onHide();
         } else {
           toast.error('Update category fail !', {
-            position: toast.POSITION.TOP_RIGHT
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 600
           });
           props.onHide();
         }
@@ -545,12 +556,14 @@ function DeleteCategory(props) {
     dispatch(deleteCategories(props.cateid)).then((res1) => {
       if (res1.payload === 200) {
         toast.success('Delete category success !', {
-          position: toast.POSITION.TOP_RIGHT
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 600
         });
         props.onHide();
       } else {
         toast.error('Delete category fail !', {
-          position: toast.POSITION.TOP_RIGHT
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 600
         });
         props.onHide();
       }

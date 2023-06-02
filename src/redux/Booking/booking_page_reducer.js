@@ -5,6 +5,7 @@ const initialState = {
     phone: "",
     date: "",
     time: "",
+    services:[],
     checkPhone: false,
     idTimeActive: "",
     isLoading: false,
@@ -23,6 +24,12 @@ export const BookingPage = createSlice({
 
         clearPhone: (state, action) => {
             state.phone = "";
+        },
+        addService:(state,action) =>{   
+            state.services?.push(action.payload)       
+       },
+        removeService:(state,action) =>{
+            state.services = [...state.services.filter((item) => item.seId  !== action.payload.seId )]
         },
 
         addDate: (state, action) => {
@@ -64,6 +71,8 @@ export const BookingPage = createSlice({
 export const {
     addPhone,
     clearPhone,
+    addService,
+    removeService,
     addDate,
     clearDate, 
     addTime, 

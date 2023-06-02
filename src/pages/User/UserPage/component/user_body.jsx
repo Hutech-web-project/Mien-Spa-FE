@@ -5,6 +5,7 @@ import "../../../../assets/scss/user_css/user_page/user_body.scss"
 import { useState } from 'react'
 import UserOrders from './user_orders'
 import UserChangePassword from './user_change_password'
+import { useJsApiLoader } from '@react-google-maps/api'
 
 const UserBody = () => {
     const [activeKey, setActiveKey] = useState('first');
@@ -12,6 +13,11 @@ const UserBody = () => {
         console.log('Selected key:', key);
         setActiveKey(key);
     }
+    const [libraries] = useState(["places"]);
+    const { isLoaded } = useJsApiLoader({
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        libraries,
+      });
     return (
         <>
             <Tab.Container id="left-tabs-example" activeKey={activeKey} onSelect={handleSelect}>
@@ -35,7 +41,7 @@ const UserBody = () => {
                     <Col sm={9}>
                         <Tab.Content>
                             <Tab.Pane eventKey="first">
-                                <UserProfile />
+                                {isLoaded ?<UserProfile />:null}                          
                             </Tab.Pane>
                             <Tab.Pane eventKey="second">
                                 <UserChangePassword/>

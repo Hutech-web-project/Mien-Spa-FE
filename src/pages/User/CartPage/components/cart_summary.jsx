@@ -1,30 +1,46 @@
 import { Col, Row } from 'react-bootstrap'
 import "../../../../assets/scss/user_css/cart_page/cart_body.scss"
-
+import { useDispatch, useSelector } from 'react-redux'
+import { selectCartPro } from '../../../../redux/Cart/cart_page_selecter'
 import React from 'react'
+import { OnChekOut } from '../../../../redux/Storage/storage_page_reducer'
+
 
 const CartSummary = () => {
+    const dispatch = useDispatch();
+    const cartList = useSelector(selectCartPro);
+    const totalPrice = () => {
+        let total = 0;
+        cartList?.map((cart) => {
+            total = total + (cart.proProductPrice * cart.proQuantity)
+        })
+        return total.toFixed(2);
+    }
+
+    const hanldeCheckOut = () => {
+        dispatch(OnChekOut());
+    }
     return (
         <>
-                <div><h5><b>Summary</b></h5></div>
-                <hr />
-                <Row>
-                    <Col className='col-title'>ITEMS 3</Col>
-                    {/* style="padding-left:0;" */}
-                    <Col className="text-right">&euro; 132.00</Col>
-                </Row>
-                <form>
-                    <p>SHIPPING</p>
-                    <select><option className="text-muted">Standard-Delivery- &euro;5.00</option></select>
-                    <p>GIVE CODE</p>
-                    <input id="code" placeholder="Enter your code" />
-                </form>
-                <Row className='row-title'>
-                    {/* style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;" */}
-                    <Col>TOTAL PRICE</Col>
-                    <Col className="text-right">&euro; 137.00</Col>
-                </Row>
-                <button className="btn">CHECKOUT</button>  
+            <div><h5><b>Summary</b></h5></div>
+            <hr />
+            {React.Children.toArray(cartList?.map((cart) => {
+                return (
+                    <>
+                        <Row>
+                            <Col className='col-title'>ITEMS {cart.proProductName}</Col>
+                            <Col className="text-right">$ {(cart.proProductPrice * cart.proQuantity).toFixed(2)}</Col>
+                        </Row>
+                    </>
+                )
+            }))}
+            <Row className='row-title'>
+                <Col>TOTAL PRICE</Col>
+                <Col className="text-right">$ {totalPrice()}</Col>
+            </Row>
+            {cartList.length > 0?
+                <button className="btn" onClick={hanldeCheckOut}>CHECKOUT</button>: <button className="btn" disabled>CHECKOUT</button>
+            }
         </>
     )
 }

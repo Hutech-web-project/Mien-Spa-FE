@@ -3,18 +3,18 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs'
 import moment from 'moment'
 import momentTimezone from "moment-timezone";
-import React, { useState } from 'react'
-import { Button, Col, Row } from 'react-bootstrap';
-import'../../../../assets/scss/user_css/booking_page/booking_time.scss';
+import React, { useEffect, useState } from 'react'
+import { Alert, Button, Col, Row } from 'react-bootstrap';
+import '../../../../assets/scss/user_css/booking_page/booking_time.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectDate, selectIdActiveTime, selectTime } from '../../../../redux/Booking/booking_page_selecter';
 import { addDate, addIdTimeActive, addTime, clearDate, clearTime } from '../../../../redux/Booking/booking_page_reducer';
-const BookingTime = () => {
+const BookingTime = (props) => {
     const [dateNow,] = useState(momentTimezone().utc().tz("Asia/Ho_Chi_Minh"));
     const [timeNow,] = useState(moment(new Date(dateNow)).format("HH:mm"));
     const idActive = useSelector(selectIdActiveTime);
     const timeSelect = useSelector(selectTime)
-    const dateSelect = useSelector(selectDate)
+    // const dateSelect = useSelector(selectDate)
     const dispatch = useDispatch()
     const timeList = [
         {
@@ -124,21 +124,24 @@ const BookingTime = () => {
         },
     ]
 
-    const _handle_date = (e) =>{
-        if(dateSelect !== ""){
-            dispatch(clearDate());
-        }
-        dispatch(addDate(e.format("DD-MM-YYYY")));
+    useEffect(() => {
+        dispatch(addDate(moment(new Date(dateNow)).format("YYYY-MM-DD")));
+    }, [])
+    const _handle_date = (e) => {
+        // if(dateSelect !== ""){
+        //     dispatch(clearDate());
+        // }
+        dispatch(addDate(e.format("YYYY-MM-DD")));
     }
 
-    const _handle_time = (e,id) =>{
-        if(idActive !== ""){
-            document.getElementById('btn-time-'+idActive).classList.remove('active');
+    const _handle_time = (e, id) => {
+        if (idActive !== "") {
+            document.getElementById('btn-time-' + idActive).classList.remove('active');
         }
-        if(timeSelect !== ""){
+        if (timeSelect !== "") {
             dispatch(clearTime(e.target.value));
         }
-        document.getElementById('btn-time-'+id).classList.add('active');
+        document.getElementById('btn-time-' + id).classList.add('active');
         dispatch(addTime(e.target.value));
         dispatch(addIdTimeActive(id));
     }
@@ -149,8 +152,8 @@ const BookingTime = () => {
                 <Col xs={12} sm={12} md={4} >
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DateCalendar
-                            defaultValue={dayjs(moment(new Date(dateNow)).format("DD-MM-YYYY"))}
-                            minDate={dayjs(moment(new Date(dateNow)).format("DD-MM-YYYY"))}
+                            defaultValue={dayjs(moment(new Date(dateNow)).format("YYYY-MM-DD"))}
+                            minDate={dayjs(moment(new Date(dateNow)).format("YYYY-MM-DD"))}
                             onChange={_handle_date}
                         />
                     </LocalizationProvider>
@@ -158,14 +161,14 @@ const BookingTime = () => {
 
                 <Col xs={12} sm={12} md={5}>
                     <Row>
-                        {timeList.map((time) => (
-                            <Col md={2} key={time.id}>
-                                {timeNow >= moment(new Date(time.time.getTime())).format("HH:mm") ?
+                        {timeList.map((time, index) => (
+                            <Col md={2} key={index}>
+                                {timeNow > moment(new Date(time.time.getTime())).format("HH:mm") ?
                                     <Button variant="outline-secondary btn-time-disabled" disabled>{moment(new Date(time.time.getTime())).format("HH:mm")}</Button>
                                     :
                                     <Button variant="outline-primary btn-time" id={'btn-time-' + time.id}
-                                     onClick={(e)=>_handle_time(e,time.id)}
-                                    value={moment(new Date(time.time.getTime())).format("HH:mm")}
+                                        onClick={(e) => _handle_time(e, time.id)}
+                                        value={moment(new Date(time.time.getTime())).format("HH:mm")}
                                     >
                                         {moment(new Date(time.time.getTime())).format("HH:mm")}
                                     </Button>
@@ -175,6 +178,11 @@ const BookingTime = () => {
                     </Row>
                 </Col>
             </Row>
+            {props.error ?
+                <Alert key={'danger'} variant={'danger'}>
+                    Please select the time !
+                </Alert> : null
+            }
         </>
 
     )

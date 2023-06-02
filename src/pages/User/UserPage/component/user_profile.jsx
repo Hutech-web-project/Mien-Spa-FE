@@ -1,31 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Button, Col, Form, InputGroup, Modal, Row } from 'react-bootstrap'
+import { Button, Col, Form, InputGroup, Row } from 'react-bootstrap'
 import "../../../../assets/scss/user_css/user_page/user_page.scss"
-import { TextField } from '@mui/material';
-import { useJsApiLoader } from "@react-google-maps/api";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../../../../redux/User/user_page_selecter';
 import validate from 'validate.js';
 import { UserPage } from '../../../../util/validate';
 import moment from 'moment';
+import { ToastContainer, toast } from 'react-toastify'
+import { putUser } from '../../../../redux/User/user_page_thunk';
+import { convertBase64 } from '../../../../util/custom';
 
-const options = {
-    componentRestrictions: { country: "vn" },
-    fields: ["address_components", "geometry", "icon", "name"],
-    strictBounds: false,
-};
+
 const UserProfile = () => {
-    const [show, setShow] = useState(false);
-    const libraries = "places";
     const user = useSelector(selectUser);
-    const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-        libraries,
-    });
-
- 
-
-
+    const dispatch = useDispatch();
+    const [address, setAddress] = useState(user?.usAddress===undefined?"":user?.usAddress);
+    const [valueAdd, setValueAddd] = useState("");
+    const autoCompleteRef = useRef();
+    const valueDirection = useRef();
+    const [baseImage, setBaseImage] = useState(null);
+    var date = new Date();
     const [userUpdate, setUserUpdate] = useState({
         ...user,
     });
@@ -37,6 +31,27 @@ const UserProfile = () => {
     });
 
 
+
+    useEffect(() => {
+        const options = {
+            componentRestrictions: { country: "vn" },
+            fields: ["address_components", "geometry", "icon", "name", "adr_address", "formatted_address"],
+            strictBounds: false,
+        };
+        autoCompleteRef.current = new window.google.maps.places.Autocomplete(
+            valueDirection.current,
+            options
+        );
+    }, []);
+
+    useEffect(() => {
+        setUserUpdate((preState) => ({
+            ...preState,
+            usAddress: address,
+        }));
+
+    }, [address]);
+
     useEffect(() => {
         const errors = validate.validate(userUpdate, UserPage);
         setValidation((pre) => ({
@@ -44,8 +59,10 @@ const UserProfile = () => {
             isvalid: errors ? false : true,
             errors: errors || {},
         }));
+        
     }, [userUpdate]);
 
+    
     const hasError = (field) => {
         return validation.touched[field] && validation.errors[field] ? true : false;
     };
@@ -64,6 +81,16 @@ const UserProfile = () => {
         }));
     };
 
+    const handlePhoto = async (event) => {
+        const files = event.target.files;
+        const base64 = await convertBase64(files[0]);
+        setBaseImage(base64);
+        setUserUpdate((preState) => ({
+          ...preState,
+          usImage: files[0],
+        }));
+    };
+
     const handleDob = (event) => {
         setUserUpdate((preState) => ({
             ...preState,
@@ -79,7 +106,68 @@ const UserProfile = () => {
 
     }
 
-    console.log(isLoaded)
+
+    const hanldeLeaveMouse = () => {
+        var place;
+        autoCompleteRef.current.addListener("place_changed", async function () {
+            place = await autoCompleteRef.current.getPlace();
+            setAddress(place.formatted_address);
+            const add = document.getElementById('address');
+            add.value = place.formatted_address;
+            return;
+        });
+        if (address !== "") {
+            const add = document.getElementById('address');
+            add.value = address;
+        }
+        else {
+            const add = document.getElementById('address');
+            add.value = '';
+        }
+    }
+
+
+    const hanldeClick = () => {
+        if (address !== "") {
+            const add = document.getElementById('address');
+            add.value = address;
+        } else {
+            const add = document.getElementById('address');
+            add.value = valueAdd;
+        }
+    }
+
+    const hanldeAddress = (e) => {
+        setValueAddd(e.target.value);
+    }
+
+    const hanldeUpdateUs = (e) => {
+        setValidation((pre) => ({
+            ...pre,
+            touched: {
+                ...pre.touched,
+                usUserName: true,
+                usDob: true,
+                usPhoneNo: true,
+            },
+        }));
+        if (validation.isvalid === true) {
+            dispatch(putUser(userUpdate)).then((res1) => {
+                if (res1.payload === 200) {
+                    toast.success('Update profile success !', {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 600
+                    });
+                } else {
+                    toast.error('Update profile fail !', {
+                        position: toast.POSITION.TOP_RIGHT,
+                        autoClose: 600
+                    });
+                }
+            });
+        }
+    }
+
     return (
         <>
             <div className="container">
@@ -95,9 +183,18 @@ const UserProfile = () => {
                                 <div className="card-body">
                                     <div className='avatar-body'>
                                         <div className="d-flex flex-column align-items-center">
-                                            <div className='avatar'>
-                                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Avatar" className="rounded-circle" width="150" />
+                                            <div className='avatar'> 
+                                            {baseImage === null?
+                                             <img src={user?.usImage === null? require("../../../../assets/images/avatar-trang-4.jpg") : user?.usImage} alt="Avatar" className="rounded-circle" width="160" height="150"/>
+                                             :
+                                             <img src={baseImage} alt="Avatar" className="rounded-circle" width="160" height="150"/>
+                                            }
+                                               
                                             </div>
+                                            <label className="custom-file-upload">
+                                                <input type="file" accept=".png, .jpg, .jpeg" onChange={handlePhoto}/>
+                                                Choose
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -149,9 +246,10 @@ const UserProfile = () => {
                                             placeholder="Enter phone number"
                                             aria-describedby="basic-addon2"
                                             onChange={handleDob}
+                                            max={moment(new Date(date)).subtract(18, "years").format("YYYY-MM-DD")}
                                             name="usDob"
                                             type="date"
-                                            defaultValue={user?.usDob}
+                                            defaultValue={moment(new Date(user?.usDob)).format("YYYY-MM-DD")}
                                             isInvalid={hasError("usDob")}
                                         />
                                         <Form.Control.Feedback type="invalid">
@@ -161,82 +259,27 @@ const UserProfile = () => {
                                     <InputGroup className="mb-3">
                                         <InputGroup.Text id="basic-addon2">Address</InputGroup.Text>
                                         <Form.Control
+                                            onChange={hanldeAddress}
+                                            onClick={hanldeClick}
+                                            id="address"
+                                            defaultValue={address}
                                             placeholder="Enter address"
                                             aria-describedby="basic-addon2"
-                                            type='button'
-                                            onClick={() => setShow(true)}
+                                            ref={valueDirection}
+                                            onBlur={hanldeLeaveMouse}
                                         />
                                     </InputGroup>
-                                    {isLoaded?
-                                        <GetAddress
-                                            show={show}
-                                            onHide={() => setShow(false)}
-                                        />
-                                    :null}
+
+                                    <Button variant="primary" onClick={hanldeUpdateUs}>Primary</Button>
                                 </div>
                             </div>
                         </Col>
                     </Row>
-
+                    <ToastContainer />
                 </div>
             </div>
         </>
     )
-
-    function GetAddress(props) {
-        const autoCompleteRef = useRef();
-        const valueDirection = useRef();
-        useEffect(() => {
-            autoCompleteRef.current = new window.google.maps.places.Autocomplete(
-                valueDirection.current,
-                options
-            );
-        }, []);
-        console.log(props)
-        return (
-            <Modal
-                {...props}
-                backdrop="static"
-                keyboard={false}
-                centered
-            >
-                <Modal.Header>
-                    <Modal.Title>Address</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {/* <TextField
-                                                type="text"
-                                                label="Địa chỉ "
-                                                name="usAddress"
-                                                onBlur={handleChange}
-                                                fullWidth
-                                                inputRef={isLoaded ? valueDirection : null}
-                                                error={hasError("usAddress")}
-                                                helperText={
-                                                    hasError("usAddress")
-                                                        ? validation.errors.usAddress?.[0]
-                                                        : null
-                                                }
-                                            /> */}
-                     <input
-                            type="text"
-                            label="Địa chỉ giao hàng"
-                            name="address"
-                            ref={valueDirection}
-                            onBlur={(e) => {
-                                console.log(valueDirection.current?.value)
-                            }}
-                        /> 
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={props.onHide}>
-                        Close
-                    </Button>
-                    <Button variant="primary">Understood</Button>
-                </Modal.Footer>
-            </Modal>
-        );
-    }
 }
 
 export default UserProfile

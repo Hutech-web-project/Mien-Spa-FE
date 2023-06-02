@@ -165,3 +165,47 @@ export const getAllUser = createAsyncThunk(
       }
     }
   );
+
+  export const putUser = createAsyncThunk(
+    "put/user",
+    async (data, { rejectWithValue }) => {
+      try {
+        let formData = new FormData();
+        const obj = {
+          createdAt: data.createdAt,
+          updatedAt: data.updatedAt,
+          usId: data.usId,
+          usUserName: data.usUserName,
+          usPassword: null,
+          usDob: data.usDob,
+          usAddress: data.usAddress,
+          usPhoneNo: data.usPhoneNo,
+          usEmailNo: data.usEmailNo,
+          usNote: data.usNote,
+          isAdmin: false,
+          isDelete: data.isDelete,
+        };
+        const config = {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        };
+        if (typeof data.usImage === "object") {
+          formData.append("file", data.usImage);
+          formData.append("data_json", JSON.stringify(obj));
+        } else {
+          const responseUser = await api.get(`/api/Users/${data.usId}`);
+          formData.append(
+            "data_json",
+            JSON.stringify({ ...obj, usImage: responseUser.data.usImage })
+          );
+        }
+  
+        const response = await api.put(`/api/Users`, formData, config);
+        
+        return response.status;
+      } catch (err) {
+        return rejectWithValue(err.message);
+      }
+    }
+  );
