@@ -10,10 +10,13 @@ import AccountsPage from './Accounts/accounts_page'
 import BookingPage from './Booking/booking_page'
 import { useDispatch } from 'react-redux'
 import { logout } from '../../redux/Auth/auth_page_reducer'
+import OrderProPage from './Orders_Product/orders_pro_page'
+import { useEffect } from 'react'
 
 const AdminIndex = () => {
   const [Id,setId]= useState(1)
   const dispatch = useDispatch();
+  const [title,setTitle] = useState("Categories")
   const hanldeLogOut = () => {
     dispatch(logout());
     window.location="/";
@@ -26,6 +29,22 @@ const AdminIndex = () => {
     collapse.classList.add('active'); 
     setId(id);
   }
+
+  useEffect(() => {
+      if(Id  === 1){
+        setTitle("Categories")
+      } else if(Id  === 2){
+        setTitle("Products")
+      }else if (Id  === 3){
+        setTitle("Services")
+      }else if(Id  === 4){
+        setTitle("Orders")
+      }else if(Id  === 5){
+        setTitle("Booking")
+      }else{
+        setTitle("Account")
+      }
+  },[Id])
   return (
     <Container fluid className='admin'>
       <Row className='admin_body'>
@@ -36,8 +55,8 @@ const AdminIndex = () => {
             </ListGroup.Item>
             <ListGroup.Item  action className='sidebar_item active' id='item-1'  onClick={()=>handleSelect(1)}>Categories</ListGroup.Item>
             <ListGroup.Item action className='sidebar_item' id='item-2'  onClick={()=>handleSelect(2)}>Products</ListGroup.Item>
-            <ListGroup.Item action className='sidebar_item' id='item-3'  onClick={()=>handleSelect(3)}>Service</ListGroup.Item>
-            <ListGroup.Item action className='sidebar_item' id='item-4'  onClick={()=>handleSelect(4)}>Order</ListGroup.Item>
+            <ListGroup.Item action className='sidebar_item' id='item-3'  onClick={()=>handleSelect(3)}>Services</ListGroup.Item>
+            <ListGroup.Item action className='sidebar_item' id='item-4'  onClick={()=>handleSelect(4)}>Orders</ListGroup.Item>
             <ListGroup.Item action className='sidebar_item' id='item-5'  onClick={()=>handleSelect(5)}>Booking</ListGroup.Item>
             <ListGroup.Item action className='sidebar_item' id='item-6'  onClick={()=>handleSelect(6)}>Account</ListGroup.Item>
             <Button variant="primary" className='sidebar_btn' onClick={hanldeLogOut}>Logout</Button>{' '}
@@ -45,12 +64,12 @@ const AdminIndex = () => {
          
         </Col>
         <Col xs={12} sm={12} md={10}  className='admin_page'>
-          <Appbar />
+          <Appbar title={title}/>
           <Container fluid className='admin_page_body'>
             {Id === 1?<CategoriesPage/>:''}
             {Id === 2?<ProductsPage/>:''}
             {Id === 3?<ServicesPage/>:''}
-            {Id === 4?<CategoriesPage/>:''}
+            {Id === 4?<OrderProPage/>:''}
             {Id === 5?<BookingPage/>:''}
             {Id === 6?<AccountsPage/>:''}
           </Container>

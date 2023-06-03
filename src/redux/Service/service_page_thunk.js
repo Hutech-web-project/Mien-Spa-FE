@@ -13,18 +13,6 @@ export const getServices = createAsyncThunk(
     }
 )
 
-// export const postServices = createAsyncThunk(
-//     'post/Service',
-//     async (data,{rejectWithValue}) => {
-//         try {
-//           const response = await api.post("/api/Serce", data)
-//           return response.data
-//         } catch (err) {
-//           return rejectWithValue(err.message);
-//         }
-//       }
-//   );
-
 export const postServices = createAsyncThunk(
   "post/service",
   async (data, { rejectWithValue }) => {
@@ -57,21 +45,7 @@ export const postServices = createAsyncThunk(
   }
 );
 
-
-  // export const putServices = createAsyncThunk(
-  //   'put/Service',
-  //   async (data,{rejectWithValue}) => {
-  //       try {
-  //         const response = await api.put(`/api/Serce/${data.cateId}`, data)
-           
-  //         return response.data
-  //       } catch (err) {
-  //         return rejectWithValue(err.message);
-  //       }
-  //     }
-  // );
-
-  export const deleteServices = createAsyncThunk(
+export const deleteServices = createAsyncThunk(
     'delete/Service',
     async (data,{rejectWithValue}) => {
         try {
@@ -81,10 +55,10 @@ export const postServices = createAsyncThunk(
           return rejectWithValue(err.message);
         }
       }
-  );
+);
 
-  export const putServices = createAsyncThunk(
-    'put/Service',
+export const putServices = createAsyncThunk(
+    "put/services",
     async (data, { rejectWithValue }) => {
       try {
         let formData = new FormData();
@@ -94,11 +68,8 @@ export const postServices = createAsyncThunk(
           sePrice: data.sePrice,
           seDescription: data.seDescription,
           seNote: data.seNote,
-          seImage: data.seImage,
           seTurnOn: data.seTurnOn,
           isDelete: data.isDelete,
-          createdAt: data.createdAt,
-          updatedAt: data.date,
         };
   
         const config = {
@@ -106,22 +77,44 @@ export const postServices = createAsyncThunk(
             "Content-Type": "multipart/form-data",
           },
         };
-        if (typeof data.seImage === "string") {
-          const dataEditNoImage = { ...dataEdit, seImage: data.seImage };
-          formData.append("json", JSON.stringify(dataEditNoImage));
-        } else {
-          formData.append("file", data.seImage);
-  
-          formData.append("json", JSON.stringify(dataEdit));
-        }
+        formData.append("file", data.seImage);
+        formData.append("json", JSON.stringify(dataEdit));
         const response = await api.put(
           `/api/Serce/${dataEdit.seId}`,
           formData,
           config
         );
-        return response.data;
+        return response.status;
       } catch (err) {
         return rejectWithValue(err.message);
       }
     }
-  );
+);
+
+export const blockServices = createAsyncThunk(
+  "block/services",
+  async (data, { rejectWithValue }) => {
+    try {
+      let formData = new FormData();
+      const dataEdit = {
+        ...data,
+        seTurnOn: data.seTurnOn === true ? false : true,
+      };
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+      formData.append("json", JSON.stringify(dataEdit));
+      const response = await api.put(
+        `/api/Serce/${dataEdit.seId}`,
+        formData,
+        config
+      );
+      return response.status;
+    } catch (err) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+

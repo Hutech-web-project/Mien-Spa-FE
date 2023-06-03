@@ -6,14 +6,12 @@ import { ChangePasswordWord } from "../../../../util/validate"
 import { ToastContainer, toast } from 'react-toastify'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { selectUser, selectUserError } from '../../../../redux/User/user_page_selecter';
 import { changePassword } from '../../../../redux/User/user_page_thunk';
 
 const UserChangePassword = () => {
     const user = useSelector(selectUser);
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const [error,setError] =  useState(useSelector(selectUserError));
     const [error2,setError2] =  useState(false);
     const [showPassword1, setShowPassword1] = useState(false);
@@ -86,7 +84,6 @@ const UserChangePassword = () => {
                 userId: user?.usId,
             };
             dispatch(changePassword(obj)).then((res) => {
-                console.log("res", res);
                 if (!res.error) {
                     if(res.payload === 202){
                         setError(false);

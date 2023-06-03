@@ -11,10 +11,11 @@ import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import { validate } from "validate.js";
-import { schemaService } from "../../../util/validate";
+import { ServicePageValidatePost, ServicePageValidatePut } from "../../../util/validate";
 import { useDispatch, useSelector } from "react-redux";
 import { selectStatusSer } from "../../../redux/Service/service_page_selecter";
 import {
+  blockServices,
   deleteServices,
   getServices,
   postServices,
@@ -71,6 +72,27 @@ function ServicesPage() {
     setDeleteShow(true);
     setIdDel(id);
   };
+
+  const hanldeStatus = (ser) => {
+    dispatch(blockServices(ser)).then((res1) => {
+      if (res1.payload === 200) {
+        dispatch(getServices()).then((res) => {
+          setDataListSer(res.payload);
+          setDataListSearch(res.payload);
+        });
+        toast.success('Create product success !', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 600
+        });
+      } else {
+        toast.error('Create product fail !', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 600
+        });
+      }
+    });
+  };
+
   const NextPage = () => {
     setPage(page + 1);
   };
@@ -99,6 +121,7 @@ function ServicesPage() {
       );
     }
   }
+
   return (
     <>
       <section className="category">
@@ -144,35 +167,44 @@ function ServicesPage() {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Service name</th>
-                  <th>Service price</th>
-                  <th>Service description</th>
-                  <th>Note</th>
+                  <th className="col-1">Service name</th>
+                  <th className="col-1">Service price</th>
+                  <th className="col-3">Service description</th>
                   <th>Service image</th>
+                  <th className="col-2">Status</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {dataListSearch
+                {React.Children.toArray(dataListSearch
                   ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((index) => {
                     return (
                       <tr key={index.seId}>
                         <td>{index.seId}</td>
                         <td>{index.seName}</td>
-                        <td>{index.sePrice}</td>
+                        <td>{index.sePrice} <FontAwesomeIcon icon={['fas', 'dollar-sign']} /></td>
                         <td>{index.seDescription}</td>
-                        <td>{index.seNote}</td>
                         <td>
                           <img
                             src={
                               process.env.REACT_APP_API_URL +
-                              "/service/" +
+                              "/image/service/" +
                               index.seImage
                             }
+                            style={{
+                              backgroundColor: "#22d3ee",
+                              color: "white",
+                              borderRadius: "30px",
+                              padding: 6,
+                              cursor: "pointer",
+                              height: 200,
+                              width: 200,
+                            }}
                             alt=""
                           />
                         </td>
+                        <td> {index.seTurnOn === true ? <Button variant="success" onClick={() => hanldeStatus(index)}>On</Button> : <Button variant="danger" onClick={() => hanldeStatus(index)}>Off</Button>}</td>
                         <td>
                           <Button
                             className="btn-action"
@@ -192,7 +224,7 @@ function ServicesPage() {
                         </td>
                       </tr>
                     );
-                  })}
+                  }))}
               </tbody>
             </Table>
           </Col>
@@ -253,19 +285,7 @@ function AddService(props) {
     if (
       dataListSer?.some(
         (ser) =>
-          ser?.seName === dataPost?.seName.trim() &&
-          ser?.sePrice === dataPost?.sePrice.trim() &&
-          ser?.seDescription === dataPost?.seDescription.trim() &&
-          ser?.seNote === dataPost?.seNote.trim() &&
-          ser?.seImage === dataPost?.seImage
-      ) === true ||
-      dataListSer?.some(
-        (ser) =>
-          ser?.seName === dataPost?.seName &&
-          ser?.sePrice === dataPost?.sePrice &&
-          ser?.seDescription === dataPost?.seDescription &&
-          ser?.seNote === dataPost?.seNote &&
-          ser?.seImage === dataPost?.seImage
+          ser?.seName === dataPost?.seName.trim()
       ) === true
     ) {
       setCheckDuplicatePost(true);
@@ -282,14 +302,29 @@ function AddService(props) {
   ]);
 
   useEffect(() => {
+    setValidationPost((pre) => ({
+      ...pre,
+      touched: {
+        ...pre.touched,
+        seName: false,
+        sePrice: false,
+        seDescription: false,
+        seNote: false,
+        seImage: false,
+      },
+    }));
+  }, [props]);
+
+  useEffect(() => {
     const errors = validate.validate(
       {
         seName: dataPost.seName,
         sePrice: dataPost.sePrice,
         seDescription: dataPost?.seDescription,
         seNote: dataPost?.seNote,
+        seImage: dataPost?.seImage,
       },
-      schemaService
+      ServicePageValidatePost
     );
     setValidationPost((pre) => ({
       ...pre,
@@ -321,6 +356,17 @@ function AddService(props) {
   const handlePostSer = () => {
     console.log(dataPost);
     console.log(validationPost.isvalid);
+    setValidationPost((pre) => ({
+      ...pre,
+      touched: {
+        ...pre.touched,
+        seName: true,
+        sePrice: true,
+        seDescription: true,
+        seNote: true,
+        seImage: true,
+      },
+    }));
     if (
       (validationPost.isvalid === true) === true &&
       checkDuplicatePost === false
@@ -333,6 +379,7 @@ function AddService(props) {
           sePrice: false,
           seDescription: false,
           seNote: false,
+          seImage: false,
         },
       }));
       dispatch(postServices(dataPost)).then((res1) => {
@@ -346,6 +393,7 @@ function AddService(props) {
               sePrice: "",
               seDescription: "",
               seNote: "",
+              seImage: "",
             }));
           });
           toast.success("Create service success !", {
@@ -364,13 +412,11 @@ function AddService(props) {
 
   const handleChangeImageCreate = async (e) => {
     const files = e.target.files;
-
     setDataPost((preState) => ({
       ...preState,
       seImage: files[0],
     }));
   };
-
   return (
     <>
       <Modal
@@ -398,54 +444,47 @@ function AddService(props) {
                 {hasErrorPost("seName")
                   ? validationPost.errors.seName?.[0]
                   : null || checkDuplicatePost === true
-                  ? "Genre name already exists"
+                    ? "Genre name already exists"
+                    : null}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicSerPrice">
+              <Form.Label>Service price</Form.Label>
+              <InputGroup className="mb-3">
+                <Form.Control
+                  aria-label="Recipient's username"
+                  aria-describedby="basic-addon2"
+                  type="text"
+                  placeholder="Enter service price"
+                  name="sePrice"
+                  onChange={hanldeChangePost}
+                  isInvalid={hasErrorPost("sePrice")}
+                />
+                <InputGroup.Text id="basic-addon2"><FontAwesomeIcon icon={['fas', 'dollar-sign']} /></InputGroup.Text>
+                <Form.Control.Feedback type="invalid">
+                  {hasErrorPost("sePrice")
+                    ? validationPost.errors.sePrice?.[0]
+                    : null}
+                </Form.Control.Feedback>
+              </InputGroup>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="formBasicSerImg">
+              <Form.Label>Service image</Form.Label>
+              <Form.Control
+                type="file"
+                name="seImage"
+                accept="image/png, image/gif, image/jpeg"
+                className="mb-3"
+                onChange={handleChangeImageCreate}
+                isInvalid={hasErrorPost("seImage")}
+              />
+              <Form.Control.Feedback type="invalid">
+                {hasErrorPost("sePrice")
+                  ? validationPost.errors.seImage?.[0]
                   : null}
               </Form.Control.Feedback>
             </Form.Group>
 
-            <Row>
-              <Col>
-                <Form.Group className="mb-3" controlId="formBasicSerPrice">
-                  <Form.Label>Service price</Form.Label>
-                  <InputGroup className="mb-3">
-                    <Form.Control
-                      aria-label="Recipient's username"
-                      aria-describedby="basic-addon2"
-                      type="text"
-                      placeholder="Enter service price"
-                      name="sePrice"
-                      onChange={hanldeChangePost}
-                      isInvalid={hasErrorPost("sePrice") || checkDuplicatePost}
-                    />
-                    <InputGroup.Text id="basic-addon2">.0 $</InputGroup.Text>
-                  </InputGroup>
-                  <Form.Control.Feedback type="invalid">
-                    {hasErrorPost("sePrice")
-                      ? validationPost.errors.sePrice?.[0]
-                      : null}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-
-              <Col>
-                <Form.Group className="mb-3" controlId="formBasicSerImg">
-                  <Form.Label>Service image</Form.Label>
-                  <Form.Group
-                    controlId="formFileMultiple"
-                    className="mb-3"
-                    type="text"
-                    name="seImage"
-                    onChange={handleChangeImageCreate}
-                  >
-                    <Form.Control
-                      type="file"
-                      name="featureImagePath"
-                      accept="image/png, image/gif, image/jpeg"
-                    />
-                  </Form.Group>
-                </Form.Group>
-              </Col>
-            </Row>
 
             <Form.Group className="mb-3" controlId="formBasicSerDes">
               <Form.Label>Service description</Form.Label>
@@ -454,7 +493,7 @@ function AddService(props) {
                 placeholder="Enter service description"
                 name="seDescription"
                 onChange={hanldeChangePost}
-                isInvalid={hasErrorPost("seDescription") || checkDuplicatePost}
+                isInvalid={hasErrorPost("seDescription")}
               />
               <Form.Control.Feedback type="invalid">
                 {hasErrorPost("seDescription")
@@ -470,36 +509,7 @@ function AddService(props) {
                 placeholder="Enter service note"
                 name="seNote"
                 onChange={hanldeChangePost}
-                isInvalid={hasErrorPost("seNote") || checkDuplicatePost}
               />
-              <Form.Control.Feedback type="invalid">
-                {hasErrorPost("seNote")
-                  ? validationPost.errors.seNote?.[0]
-                  : null}
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formbasicServiceStatus">
-              <Form.Label>Service Status</Form.Label>
-              {["radio"].map((type) => (
-                <div key={`inline-${type}`} className="mb-3">
-                  <Form.Check
-                    inline
-                    label="On"
-                    name="seTurnOn"
-                    type={type}
-                    id={`inline-${type}-1`}
-                    defaultChecked
-                  />
-                  <Form.Check
-                    inline
-                    label="Off"
-                    name="seTurnOn"
-                    type={type}
-                    id={`inline-${type}-2`}
-                  />
-                </div>
-              ))}
             </Form.Group>
           </Form>
         </Modal.Body>
@@ -561,7 +571,7 @@ function EditService(props) {
         seDescription: dataPut?.seDescription,
         seNote: dataPut?.seNote,
       },
-      schemaService
+      ServicePageValidatePut
     );
     setValidationPut((pre) => ({
       ...pre,
@@ -573,24 +583,7 @@ function EditService(props) {
   useEffect(() => {
     if (dataPut?.seName !== undefined) {
       if (
-        dataListSer?.some(
-          (ser) =>
-            ser?.seId !== dataPut?.seId &&
-            ser?.seName === dataPut?.seName.trim() &&
-            ser?.sePrice === dataPut?.sePrice &&
-            ser?.seDescription === dataPut?.seDescription.trim() &&
-            ser?.seNote === dataPut?.seNote.trim() &&
-            ser?.seImage === dataPut?.seImage
-        ) === true ||
-        dataListSer?.some(
-          (ser) =>
-            ser?.seId !== dataPut?.seId &&
-            ser?.seName === dataPut?.seName &&
-            ser?.sePrice === dataPut?.sePrice &&
-            ser?.seDescription === dataPut?.seDescription &&
-            ser?.seNote === dataPut?.seNote &&
-            ser?.seImage === dataPut?.seImage
-        ) === true
+        dataListSer?.some((ser) => ser.serId === dataPut?.seId && ser?.seName === dataPut?.seName) === true
       ) {
         setCheckDuplicatePut(true);
       } else {
@@ -599,12 +592,8 @@ function EditService(props) {
     }
   }, [
     dataListSer,
-    dataPut?.seId,
     dataPut?.seName,
-    dataPut?.sePrice,
-    dataPut?.seDescription,
-    dataPut?.seNote,
-    dataPut?.seImage,
+    dataPut?.seId,
   ]);
 
   const hasErrorPut = (field) => {
@@ -626,12 +615,16 @@ function EditService(props) {
       },
     }));
   };
-  
+
   const handlePutSer = () => {
-    if (
-      (validationPut.isvalid === true) === true &&
-      checkDuplicatePut === false
-    ) {
+    setValidationPut((pre) => ({
+      ...pre,
+      touched: {
+        ...pre.touched,
+        seName: true,
+      },
+    }));
+    if ((validationPut.isvalid === true) === true && checkDuplicatePut === false) {
       setValidationPut((pre) => ({
         ...pre,
         touched: {
@@ -657,6 +650,14 @@ function EditService(props) {
         }
       });
     }
+  };
+
+  const handleChangeImageUpdate = async (e) => {
+    const files = e.target.files;
+    setDataPut((preState) => ({
+      ...preState,
+      seImage: files[0],
+    }));
   };
 
   return (
@@ -687,8 +688,8 @@ function EditService(props) {
                 {hasErrorPut("seName")
                   ? validationPut.errors.seName?.[0]
                   : null || checkDuplicatePut === true
-                  ? "Genre name already exists"
-                  : null}
+                    ? "Genre name already exists"
+                    : null}
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -698,14 +699,14 @@ function EditService(props) {
                   <Form.Label>Service price</Form.Label>
                   <InputGroup className="mb-3">
                     <Form.Control
-                    defaultValue={props.ser?.sePrice}
+                      defaultValue={props.ser?.sePrice}
                       aria-label="Recipient's username"
                       aria-describedby="basic-addon2"
                       type="text"
                       placeholder="Enter service price"
                       name="sePrice"
                       onChange={hanldeChangePut}
-                      isInvalid={hasErrorPut("sePrice") || checkDuplicatePut}
+                      isInvalid={hasErrorPut("sePrice")}
                     />
                     <InputGroup.Text id="basic-addon2">.0 $</InputGroup.Text>
                   </InputGroup>
@@ -720,19 +721,14 @@ function EditService(props) {
               <Col>
                 <Form.Group className="mb-3" controlId="formBasicSerImg">
                   <Form.Label>Service image</Form.Label>
-                  <Form.Group
-                    controlId="formFileMultiple"
+
+                  <Form.Control
                     className="mb-3"
-                    type="text"
+                    type="file"
                     name="seImage"
-                    onChange={hanldeChangePut}
-                  >
-                    <Form.Control
-                      type="file"
-                      name="myImage"
-                      accept="image/png, image/gif, image/jpeg"
-                    />
-                  </Form.Group>
+                    onChange={handleChangeImageUpdate}
+                    accept="image/png, image/gif, image/jpeg"
+                  ></Form.Control>
                 </Form.Group>
               </Col>
             </Row>
@@ -742,11 +738,10 @@ function EditService(props) {
               <Form.Control
                 defaultValue={props.ser?.seDescription}
                 type="text"
-                as="textarea"
                 placeholder="Enter service description"
                 name="seDescription"
                 onChange={hanldeChangePut}
-                isInvalid={hasErrorPut("seDescription") || checkDuplicatePut}
+                isInvalid={hasErrorPut("seDescription")}
               />
               <Form.Control.Feedback type="invalid">
                 {hasErrorPut("seDescription")
@@ -762,38 +757,14 @@ function EditService(props) {
                 type="text"
                 placeholder="Enter service note"
                 name="seNote"
-                as="textarea"
                 onChange={hanldeChangePut}
-                isInvalid={hasErrorPut("seNote") || checkDuplicatePut}
+                isInvalid={hasErrorPut("seNote")}
               />
               <Form.Control.Feedback type="invalid">
                 {hasErrorPut("seNote")
                   ? validationPut.errors.seNote?.[0]
                   : null}
               </Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formbasicServiceStatus">
-              <Form.Label>Service Status</Form.Label>
-              {["radio"].map((type) => (
-                <div key={`inline-${type}`} className="mb-3">
-                  <Form.Check
-                    inline
-                    label="On"
-                    name="serviceStatus"
-                    type={type}
-                    id={`inline-${type}-1`}
-                    defaultChecked
-                  />
-                  <Form.Check
-                    inline
-                    label="Off"
-                    name="serviceStatus"
-                    type={type}
-                    id={`inline-${type}-2`}
-                  />
-                </div>
-              ))}
             </Form.Group>
           </Form>
         </Modal.Body>

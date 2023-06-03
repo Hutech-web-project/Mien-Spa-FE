@@ -7,14 +7,13 @@ import React, { useEffect, useState } from 'react'
 import { Alert, Button, Col, Row } from 'react-bootstrap';
 import '../../../../assets/scss/user_css/booking_page/booking_time.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectDate, selectIdActiveTime, selectTime } from '../../../../redux/Booking/booking_page_selecter';
-import { addDate, addIdTimeActive, addTime, clearDate, clearTime } from '../../../../redux/Booking/booking_page_reducer';
+import { selectIdActiveTime, selectTime } from '../../../../redux/Booking/booking_page_selecter';
+import { addDate, addIdTimeActive, addTime, clearTime } from '../../../../redux/Booking/booking_page_reducer';
 const BookingTime = (props) => {
     const [dateNow,] = useState(momentTimezone().utc().tz("Asia/Ho_Chi_Minh"));
     const [timeNow,] = useState(moment(new Date(dateNow)).format("HH:mm"));
     const idActive = useSelector(selectIdActiveTime);
     const timeSelect = useSelector(selectTime)
-    // const dateSelect = useSelector(selectDate)
     const dispatch = useDispatch()
     const timeList = [
         {
@@ -126,7 +125,7 @@ const BookingTime = (props) => {
 
     useEffect(() => {
         dispatch(addDate(moment(new Date(dateNow)).format("YYYY-MM-DD")));
-    }, [])
+    }, [dispatch,dateNow])
     const _handle_date = (e) => {
         // if(dateSelect !== ""){
         //     dispatch(clearDate());

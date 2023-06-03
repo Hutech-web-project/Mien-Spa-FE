@@ -345,62 +345,92 @@ export const ProductPageValidatePut = {
         },
     }
 };
-export const schemaService = {
+export const ServicePageValidatePost = {
     seName: {
         presence: {
             allowEmpty: false,
-            message: "^Tên dịch vụ không được trống",
+            message: "^Service name cannot be empty",
         },
         length: {
             minimum: 5,
             maximum: 50,
-            message: "^Tên sản phẩm không được quá ngắn hoặc quá dài",
+            message: "^Service name should not be too short or too long",
         },
         format: {
             pattern: validName,
             flags: "i",
-            message: "^Tên sản phẩm không bao gồm số hoặc kí tự đặc biệt",
+            message: "^Service name does not include numbers or special characters",
         },
     },
     seDescription: {
         presence: {
             allowEmpty: false,
-            message: "^Nội dung chi tiết không được trống",
+            message: "^Details cannot be left blank",
         },
         length: {
             minimum: 20,
-            message: "^Nội dung không được quá ngắn",
-        }
-
-    },
-    seNote: {
-        presence: {
-            allowEmpty: false,
-            message: "^Nội dung quy trình không được trống",
-        },
-        length: {
-            minimum: 20,
-            message: "^Nội dung không được quá ngắn",
+            message: "^Content should not be too short",
         }
 
     },
     sePrice: {
         presence: {
             allowEmpty: false,
-            message: "^Gía tiền không được trống",
+            message: "^Price cannot be empty",
         },
         numericality: {
             notInteger: true,
-            message: "^Gía tiền không bao gồm ký tự hoặc chữ",
+            message: "^Price does not include characters or letters",
         },
+    },
+    seImage:{
+        presence: {
+          allowEmpty: false,
+          message: "^Please choose a photo",
+        },
+    }
+};
 
+export const ServicePageValidatePut = {
+    seName: {
+        presence: {
+            allowEmpty: false,
+            message: "^Service name cannot be empty",
+        },
+        length: {
+            minimum: 5,
+            maximum: 50,
+            message: "^Service name should not be too short or too long",
+        },
+        format: {
+            pattern: validName,
+            flags: "i",
+            message: "^Service name does not include numbers or special characters",
+        },
+    },
+    seDescription: {
+        presence: {
+            allowEmpty: false,
+            message: "^Details cannot be left blank",
+        },
+        length: {
+            minimum: 20,
+            message: "^Content should not be too short",
+        }
 
     },
-   
-
-
-
+    sePrice: {
+        presence: {
+            allowEmpty: false,
+            message: "^Price cannot be empty",
+        },
+        numericality: {
+            notInteger: true,
+            message: "^Price does not include characters or letters",
+        },
+    },
 };
+
 export const CategoriesPageValidate = {
     cateName: {
         presence: {

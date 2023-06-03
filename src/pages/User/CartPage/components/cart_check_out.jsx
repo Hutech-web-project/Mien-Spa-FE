@@ -54,8 +54,10 @@ const CartCheckOut = () => {
         orProUserName: user ? user.usUserName : "",
         listProId: [
             {
-                ordProQuantity: 0,
-                productId: "",
+                proProductName: "",
+                proProductPrice: 0,
+                proQuantity: 0,
+                productId: ""
             },
         ],
     });
@@ -68,15 +70,15 @@ const CartCheckOut = () => {
         }));
 
     }, [order]);
-
+    console.log(cartList)
     useEffect(() => {
         const list = [];
         cartList.forEach((element) => {
             list.push({
                 proProductName: element.proProductName,
                 proProductPrice: element.proProductPrice,
-                proQuantity: element.ordProQuantity,
-                productId: element.proId,
+                proQuantity: element.proQuantity,
+                productId: element.productId,
             });
         });
 
@@ -221,6 +223,7 @@ const CartCheckOut = () => {
                 orProUserName: true,
             },
         }));
+        console.log(order);
         if (validation.isvalid === true) {
             dispatch(postOrderPro(order)).then(async(res) => {
                 console.log(res);
@@ -240,8 +243,6 @@ const CartCheckOut = () => {
                 }
             });
         }
-
-
     }
     return (
         <div className="checkout">
