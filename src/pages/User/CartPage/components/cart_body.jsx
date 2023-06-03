@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Col, Container, Row } from 'react-bootstrap'
 import "../../../../assets/scss/user_css/cart_page/cart_body.scss"
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import CartShoppingCart from './cart_shoppingCart'
 import CartSummary from './cart_summary'
 import { selectCheckOut } from '../../../../redux/Storage/storage_page_selecter'
@@ -19,7 +19,7 @@ const CartBody = () => {
     return (
         <>
             <section className='shopping-cart'>
-                <Container className="card">
+                <Container className="card-shopping">
                     <Row>
                         {checkout === false ?
                             <>

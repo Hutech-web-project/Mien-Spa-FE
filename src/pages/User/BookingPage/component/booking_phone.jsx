@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from "react-redux";
-import { addPhone, clearPhone } from "../../../../redux/Booking/booking_page_reducer";
+import { addPhone } from "../../../../redux/Booking/booking_page_reducer";
 import { Col, Form } from 'react-bootstrap';
 import { selectPhone } from '../../../../redux/Booking/booking_page_selecter';
 import { validate } from 'validate.js';

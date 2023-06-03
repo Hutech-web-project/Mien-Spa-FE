@@ -1,5 +1,5 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit"
-import { postProduct, deleteProducts, getProducts, putProducts  } from "./product_page_thunk.js"
+import { postProduct, deleteProducts, getProducts, putProducts, blockProducts  } from "./product_page_thunk.js"
 
 
 const initialState = {
@@ -19,13 +19,13 @@ const ProductPage = createSlice({
             state.isLoading = false;
             state.products = action.payload
         })
-        builder.addMatcher(isAnyOf(postProduct.fulfilled, putProducts.fulfilled), (state,) => {
+        builder.addMatcher(isAnyOf(postProduct.fulfilled, putProducts.fulfilled,blockProducts.fulfilled), (state,) => {
             state.isLoading = false;
         })
-        builder.addMatcher(isAnyOf(getProducts.pending, postProduct.pending, putProducts.pending,deleteProducts.pending), (state,) => {
+        builder.addMatcher(isAnyOf(getProducts.pending, postProduct.pending, putProducts.pending,deleteProducts.pending,blockProducts.pending), (state,) => {
             state.isLoading = true;
         })
-        builder.addMatcher(isAnyOf(getProducts.rejected, postProduct.rejected, putProducts.rejected,deleteProducts.rejected), (state, action) => {
+        builder.addMatcher(isAnyOf(getProducts.rejected, postProduct.rejected, putProducts.rejected,deleteProducts.rejected,blockProducts.rejected), (state, action) => {
             state.isLoading = false;
             state.error = action.payload
         })

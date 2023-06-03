@@ -128,7 +128,6 @@ const ShopBody = () => {
                     <div className="card">
                       <span className="title">Categories</span>
                       <Accordion defaultActiveKey={['0']} alwaysOpen>
-                        <a href="#!" onClick={() => hanldeCate(0)} className="getAll">All</a>
                         {React.Children.toArray(dataListCate.map((item, index) => {
                           let id = 0;
                           if (item.cateIdParent === 0) {
@@ -160,7 +159,9 @@ const ShopBody = () => {
                           }
                           return null;
                         }))}
+                    
                       </Accordion>
+                      <a href="#!" onClick={() => hanldeCate(0)} className="getAll">All</a>
                     </div>
                   </div>
                 </div>
@@ -171,7 +172,7 @@ const ShopBody = () => {
                 {dataListSearch.length > 0 ?
                   React.Children.toArray(dataListSearch?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => {
                     if (item.isDelete === false) {
-                      if (item.proTurnOn === false) {
+                      if (item.proTurnOn === true) {
                         return (
                           <Col sx={12} md={'auto'} sm={'auto'} key={index}>
                             <Col className='product-grid2'>
@@ -197,7 +198,7 @@ const ShopBody = () => {
                               </div>
                               <div className="product-content">
                                 <h3 className="title"><a href="#!">{item.proName}</a></h3>
-                                <span className="price">{item.proPrice} $</span>
+                                <span className="price">{item.proPrice} <FontAwesomeIcon icon={['fas', 'dollar-sign']} /></span>
                               </div>
                             </Col>
                           </Col>
@@ -236,7 +237,7 @@ const ShopBody = () => {
                   <Pagination>
                     {page === 0 ? <Pagination.Prev onClick={PrevPage} disabled /> : <Pagination.Prev onClick={PrevPage} />}
                     {rows}
-                    {page === Math.floor(dataListCate.length / rowsPerPage) ? <Pagination.Next onClick={NextPage} disabled /> : <Pagination.Next onClick={NextPage} />}
+                    {page === Math.floor(dataListPro.length / rowsPerPage -1) ? <Pagination.Next onClick={NextPage} disabled /> : <Pagination.Next onClick={NextPage} />}
                   </Pagination>
                 </Col> : null
               }

@@ -11,9 +11,9 @@ const CartSummary = () => {
     const cartList = useSelector(selectCartPro);
     const totalPrice = () => {
         let total = 0;
-        cartList?.map((cart) => {
+        cartList?.forEach(cart => {
             total = total + (cart.proProductPrice * cart.proQuantity)
-        })
+        });
         return total.toFixed(2);
     }
 
@@ -38,8 +38,8 @@ const CartSummary = () => {
                 <Col>TOTAL PRICE</Col>
                 <Col className="text-right">$ {totalPrice()}</Col>
             </Row>
-            {cartList.length > 0?
-                <button className="btn" onClick={hanldeCheckOut}>CHECKOUT</button>: <button className="btn" disabled>CHECKOUT</button>
+            {cartList.length > 0 ?
+                <button className="btn" onClick={hanldeCheckOut}>CHECKOUT</button> : <button className="btn" disabled>CHECKOUT</button>
             }
         </>
     )

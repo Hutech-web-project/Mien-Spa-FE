@@ -151,9 +151,9 @@ function CategoriesPage() {
                 </tr>
               </thead>
               <tbody>
-                {dataListSearch?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((index) => {
+                {React.Children.toArray(dataListSearch?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((index) => {
                   return (
-                    <tr key={index.cateId}>
+                    <tr>
                       <td>{index.cateId}</td>
                       <td>{index.cateName}</td>
                       <td>{convertCateParent(index.cateIdParent)}</td>
@@ -165,8 +165,7 @@ function CategoriesPage() {
                       </td>
                     </tr>
                   )
-                })}
-
+                }))}
               </tbody>
             </Table>
           </Col>
@@ -211,7 +210,6 @@ function AddCategory(props) {
   }, [dispatch]);
 
   useEffect(() => {
-    // console.log(dataListCate?.find((cate) => cate?.cateName.includes(dataPost?.cateName) && cate?.cateIdParent === dataPost?.cateIdParent))
     if (
       dataListCate?.some((cate) => cate?.cateName === dataPost?.cateName.trim() && cate?.cateIdParent === dataPost?.cateIdParent) ===
       true || dataListCate?.some((cate) => cate?.cateName === dataPost?.cateName && cate?.cateIdParent === 0) === true
@@ -456,7 +454,6 @@ function EditCategory(props) {
         },
       }));
       dispatch(putCategories(dataPut)).then((res1) => {
-        console.log(res1.payload)
         if (res1.payload === 200) {
           dispatch(getCategories()).then((res2) => {
             setDataListCate(res2.payload);

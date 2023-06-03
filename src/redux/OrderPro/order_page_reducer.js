@@ -1,5 +1,5 @@
 import { createSlice ,isAnyOf} from "@reduxjs/toolkit";
- import { postOrderPro,fetchOrderPro,fetchOrderProByUser,fetchOrderProDetail,putOrderPro, fetchOrderProByDate, fetchOrderByWeek } from "./order_page_thunk";
+ import { postOrderPro,putOrderPro, getOrderProduct, getOrderProDetail } from "./order_page_thunk";
 
 const initialState = {
     isLoading:false,
@@ -16,50 +16,37 @@ export const OrderProPage = createSlice({
         },
       },
     extraReducers:(builder) =>{
-     builder.addCase(postOrderPro.fulfilled,(state,action)=>{
+     builder.addCase( postOrderPro.fulfilled,(state,action)=>{
         state.isLoading = false;
         state.success = true
      })
 
      builder.addMatcher(isAnyOf(
-      // fetchOrderPro.fulfilled,
-      // fetchOrderProByUser.fulfilled,
-      // fetchOrderProDetail.fulfilled,
       putOrderPro.fulfilled,
-      // fetchOrderProByDate.fulfilled,
-      // fetchOrderByWeek.fulfilled
+      getOrderProduct.fulfilled,
+      getOrderProDetail.fulfilled,
       ),(state,action)=>{
       state.isLoading = false;
    })
      builder.addMatcher(isAnyOf(
       postOrderPro.pending,
-      // fetchOrderPro.pending,
-      // fetchOrderProByUser.pending,
-      // fetchOrderProDetail.pending,
+      getOrderProduct.pending,
       putOrderPro.pending,
-      // fetchOrderProByDate.pending,
-      // fetchOrderByWeek.pending
+      getOrderProDetail.pending,
       ),(state,action)=>{
       state.isLoading = true;
    })
      builder.addMatcher(isAnyOf(
       postOrderPro.rejected,
-      // fetchOrderPro.rejected,
-      // fetchOrderProByUser.rejected,
-      // fetchOrderProDetail.rejected,
+      getOrderProduct.rejected,
       putOrderPro.rejected,
-      // fetchOrderProByDate.rejected,
-      // fetchOrderByWeek.rejected
+      getOrderProDetail.rejected,
       ),(state,action)=>{
         state.isLoading = false;
         state.error = action.payload
         state.success = false
-
      })
-    
-
-    }
-    
+    }   
 })
 export const { offSuccess } = OrderProPage.actions;
 

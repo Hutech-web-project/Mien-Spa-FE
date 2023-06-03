@@ -1,9 +1,10 @@
-.shop {
 
+
+.shop {
     .form {
-        margin: 20px 0px 20px 20px;
+        margin-top: 20px;
         border: 1px solid #b7b7b7;
-        // border-radius: 60px;
+        background-color: #fff;
 
         .form-item {
             display: flex;
@@ -20,7 +21,7 @@
 
             .form-item-icon {
                 margin-top: 10px;
-                margin-right: 1%;
+                margin-right: 2%;
             }
         }
     }
@@ -38,13 +39,15 @@
             .card {
                 border: none;
                 border-radius: 0;
-                margin-bottom: 25px;
+                margin-bottom: 25px !important;
+                padding: 20px;
                 
                 .title{
                     font-size: larger;
                     font-weight: 500;
                 }       
                 .getAll{
+                    margin-top: 10px !important;
                     margin-left: 20px;
                     color: #111111;
                     font-size: 16px;
@@ -181,6 +184,8 @@
        
 
         .product-grid2 {
+            height: 430px;
+            width: 285px;
             font-family: 'Open Sans', sans-serif;
             position: relative;
             box-shadow: 0px 0px 0px 2px #eeee;
@@ -332,6 +337,7 @@
                 .title {
                     font-size: 17px;
                     margin: 0 0 7px;
+                    height: 50px;
 
                     a {
                         color: #303030;
@@ -344,7 +350,8 @@
 
                 .price {
                     color: #303030;
-                    font-size: 20px
+                    font-size: 20px;
+                    padding-bottom: 30px;
                 }
             }
         }

@@ -16,6 +16,7 @@ import {
   faCircle,
   faCode,
   faDashboard,
+  faDollarSign,
   faEnvelope,
   faExclamationTriangle,
   faEye,
@@ -62,4 +63,5 @@ library.add(
   faPlus,
   faMinus,
   faTrashAlt,
+  faDollarSign,
 );

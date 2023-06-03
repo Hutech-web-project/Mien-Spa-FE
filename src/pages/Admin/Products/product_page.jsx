@@ -1,21 +1,20 @@
 
 import React, { useEffect, useState } from 'react'
-import { Button, Col, Container, Form, InputGroup, Modal, Pagination, Row, Table, Toast } from 'react-bootstrap'
+import { Button, Col, Container, Form, InputGroup, Modal, Pagination, Row, Table } from 'react-bootstrap'
 import "../../../assets/scss/admin_css/product.scss"
 import { validate } from 'validate.js'
 import { ProductPageValidatePost, ProductPageValidatePut } from '../../../util/validate'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useDispatch, useSelector } from 'react-redux'
 import { ToastContainer, toast } from 'react-toastify'
-import { selectStatusPro } from '../../../redux/Product/product_page_selecter'
-import { postProducts, deleteProducts, getProducts, postProduct, putProducts } from '../../../redux/Product/product_page_thunk'
+import { selectListPro } from '../../../redux/Product/product_page_selecter'
+import { getProducts, postProduct, putProducts, blockProducts } from '../../../redux/Product/product_page_thunk'
 import { getCategories } from '../../../redux/Category/category_page_thunk'
 const Product = () => {
     const [createShow, setCreateShow] = useState(false);
     const [deleteshow, setDeleteShow] = useState(false);
     const [editShow, setEditShow] = useState(false);
     const [dataEdit, setDataEdit] = useState({})
-    const [idDel, setIdDel] = useState(0);
     const [dataListProduct, setDataListProduct] = useState([]);
     const [dataListSearch, setDataListSearch] = useState([]);
     const [page, setPage] = useState(0);
@@ -52,9 +51,29 @@ const Product = () => {
         setDataEdit(data);
     }
 
-    const hanldeDelete = (id) => {
-        setDeleteShow(true);
-        setIdDel(id);
+    // const hanldeDelete = (id) => {
+    //     setDeleteShow(true);
+    //     setIdDel(id);
+    // }
+
+    const hanldeStatus = (pro) => {
+        dispatch(blockProducts(pro)).then((res1) => {
+            if (res1.payload === 200) {
+                dispatch(getProducts()).then((res) => {
+                    setDataListProduct(res.payload);
+                    setDataListSearch(res.payload)
+                });
+                toast.success('Create product success !', {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 600
+                });
+            } else {
+                toast.error('Create product fail !', {
+                    position: toast.POSITION.TOP_RIGHT,
+                    autoClose: 600
+                });
+            }
+        });
     }
 
     const NextPage = () => {
@@ -120,21 +139,22 @@ const Product = () => {
                                     <tr>
                                         <th>#</th>
                                         <th>Name</th>
-                                        <th>Price</th>
-                                        <th>Feature_img_path</th>
-                                        <th>Content</th>
+                                        <th className='col-1'>Price</th>
+                                        <th className='col-3'>Content</th>
                                         <th>Brand</th>
-                                        <th>turnOn</th>
-                                        <th>Action</th>
+                                        <th>Status</th>
+                                        <th className='col-2'>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {dataListSearch?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((index) => {
+                                    {React.Children.toArray(dataListSearch?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((index) => {
                                         return (
                                             <tr key={index.proId}>
                                                 <td>{index.proId}</td>
-                                                <td>{index.proName}</td>
-                                                <td>{index.proPrice}</td>
+                                                <td >{index.proName}</td>
+                                                <td>{index.proPrice} <FontAwesomeIcon icon={['fas', 'dollar-sign']} /></td>
+                                                <td >{index.proContent}</td>
+                                                <td>{index.proBrand}</td>
                                                 <td><img src={
                                                     process.env.REACT_APP_API_URL +
                                                     "/image/product/" +
@@ -147,16 +167,16 @@ const Product = () => {
                                                         height: 200,
                                                         width: 200,
                                                     }} alt="" /></td>
-                                                <td>{index.proContent}</td>
-                                                <td>{index.proBrand}</td>
-                                                <td>{index.proTurnOn.toString()}</td>
+                                                <td>{
+                                                    index.proTurnOn === true ? <Button variant="success" onClick={() => hanldeStatus(index)}>On</Button> : <Button variant="danger" onClick={() => hanldeStatus(index)}>Off</Button>
+                                                }</td>
                                                 <td >
                                                     <Button className='btn-action' variant="primary" onClick={() => hanldeClickEdit(index)}>Edit</Button>
-                                                    <Button className='btn-action' variant="danger" onClick={() => hanldeDelete(index.proId)}>Delete</Button>
+                                                    {/* <Button className='btn-action' variant="danger" onClick={() => hanldeDelete(index.proId)}>Delete</Button> */}
                                                 </td>
                                             </tr>
                                         )
-                                    })}
+                                    }))}
                                 </tbody>
                             </Table>
                         </Col>
@@ -182,7 +202,7 @@ const Product = () => {
 function AddProduct(props) {
     const [checkDuplicatePost, setCheckDuplicatePost] = useState(false);
     const [dataListCate, setDataListCate] = useState([]);
-    const [dataListProduct, setDataListProduct] = useState([]);
+    const dataListProduct = useSelector(selectListPro);
     const [dataPost, setDataPost] = useState({
         category_id: null,
         proName: "",
@@ -194,11 +214,7 @@ function AddProduct(props) {
         isDelete: false,
     });
     const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(getProducts()).then((res) => {
-            setDataListProduct(res.payload);
-        });
-    }, [dispatch])
+
     const [validationPost, setValidationPost] = useState({
         touched: {},
         errors: {},
@@ -213,6 +229,22 @@ function AddProduct(props) {
             errors: errors || {},
         }));
     }, [dataPost]);
+
+    useEffect(() => {
+        setValidationPost((pre) => ({
+            ...pre,
+            touched: {
+                ...pre.touched,
+                proName: false,
+                proContent: false,
+                proBrand: false,
+                proPrice: false,
+                featureImgPath: false,
+                category_id: false,
+            },
+        }));
+    }, [props]);
+
 
     useEffect(() => {
         dispatch(getCategories()).then((res) => {
@@ -300,9 +332,6 @@ function AddProduct(props) {
             dispatch(postProduct(dataPost)).then((res1) => {
                 console.log(res1)
                 if (res1.payload === 201) {
-                    dispatch(getProducts()).then((res2) => {
-                        setDataListProduct(res2.payload);
-                    });
                     toast.success('Create product success !', {
                         position: toast.POSITION.TOP_RIGHT,
                         autoClose: 600
@@ -433,28 +462,6 @@ function AddProduct(props) {
                             {hasErrorPost("category_id") ? validationPost.errors.category_id?.[0] : null}
                         </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="formBasicTurnOn">
-                        <Form.Label>Turn on or off product</Form.Label>
-                        <div className="mb-3">
-                            <Form.Check
-                                inline
-                                value={true}
-                                label="On"
-                                onChange={hanldeChangePost}
-                                name="proTurnOn"
-                                type="radio"
-                                defaultChecked
-                            />
-                            <Form.Check
-                                inline
-                                value={false}
-                                label="Off"
-                                onChange={hanldeChangePost}
-                                name="proTurnOn"
-                                type="radio"
-                            />
-                        </div>
-                    </Form.Group>
                 </Form>
             </Modal.Body>
             <Modal.Footer>
@@ -471,7 +478,7 @@ function AddProduct(props) {
 function EditProduct(props) {
     const [checkDuplicatePut, setCheckDuplicatePost] = useState(false);
     const [dataListCate, setDataListCate] = useState([]);
-    const [dataListProduct, setDataListProduct] = useState([]);
+    const dataListProduct = useSelector(selectListPro);
     const [dataPut, setDataPut] = useState({
         proId: "",
         category_id: 0,
@@ -485,9 +492,6 @@ function EditProduct(props) {
     });
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(getProducts()).then((res) => {
-            setDataListProduct(res.payload);
-        });
         dispatch(getCategories()).then((res) => {
             setDataListCate(res.payload);
         });
@@ -530,7 +534,7 @@ function EditProduct(props) {
         } else {
             setCheckDuplicatePost(false);
         }
-    }, [dataListProduct, dataPut?.proName, dataPut?.category_id]);
+    }, [dataListProduct, dataPut?.proName, dataPut?.category_id, dataPut?.proId]);
 
     const hanldeChangePut = (e) => {
         setDataPut((preState) => ({
@@ -596,9 +600,6 @@ function EditProduct(props) {
             dispatch(putProducts(dataPut)).then((res1) => {
                 console.log(res1)
                 if (res1.payload === 200) {
-                    dispatch(getProducts()).then((res2) => {
-                        setDataListProduct(res2.payload);
-                    });
                     toast.success('Create product success !', {
                         position: toast.POSITION.TOP_RIGHT,
                         autoClose: 600
@@ -626,133 +627,111 @@ function EditProduct(props) {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-            <Form>
-                        <Form.Group className="mb-3" controlId="formBasicProName">
-                            <Form.Label>Product name</Form.Label>
-                            <Form.Control
-                                type="text"
-                                defaultValue={props.pro.proName}
-                                placeholder="Enter Product name"
-                                name="proName"
-                                onChange={hanldeChangePut}
-                                isInvalid={hasErrorPut("proName")}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {hasErrorPut("proName") ? validationPut.errors.proName?.[0] : null}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicProPrice">
-                            <Form.Label>Product price</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Enter Product price"
-                                name="proPrice"
-                                defaultValue={props.pro.proPrice}
-                                onChange={hanldeChangePut}
-                                isInvalid={hasErrorPut("proPrice")}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {hasErrorPut("proPrice") ? validationPut.errors.proPrice?.[0] : null}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group controlId="formBasicProImg" className="mb-3">
-                            <Form.Label>Choose Product image</Form.Label>
-                            <Form.Control type="file"
-                                accept="image/*"
-                                name='featureImgPath'
-                                onChange={handleChangeImageUpdate}
-                                isInvalid={hasErrorPut("featureImgPath")}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {hasErrorPut("featureImgPath") ? validationPut.errors.featureImgPath?.[0] : null}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicProContent">
-                            <Form.Label>Product Content</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Enter Product Content"
-                                name="proContent"
-                                defaultValue={props.pro.proContent}
-                                as="textarea"
-                                onChange={hanldeChangePut}
-                                isInvalid={hasErrorPut("proContent")}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {hasErrorPut("proContent") ? validationPut.errors.proContent?.[0] : null}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicProBrand">
-                            <Form.Label>Product Brand</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="Enter Product Brand"
-                                name="proBrand"
-                                defaultValue={props.pro.proBrand}
-                                onChange={hanldeChangePut}
-                                isInvalid={hasErrorPut("proBrand")}
-                            />
-                            <Form.Control.Feedback type="invalid">
-                                {hasErrorPut("proBrand") ? validationPut.errors.proBrand?.[0] : null}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="formBasicProBrand">
-                            <Form.Label>Category</Form.Label>
-                            <Form.Select
-                                name="category_id"
-                                isInvalid={hasErrorPut("category_id")}
-                                onChange={hanldeSelectPut}
-                                defaultValue={props.pro.category_id}
-                            >
-                                <option value={0} >Not selected</option>
-                                {React.Children.toArray(dataListCate.map((item) => {
-                                    let id = 0;
-                                    if (item.cateIdParent === 0) {
-                                        id = item.cateId;
-                                        return (
-                                            <>
-                                                <option value={item.cateId}>{item.cateName}</option>
-                                                {
-                                                    React.Children.toArray(dataListCate.map((chilItem) => {
-                                                        if (chilItem.cateIdParent === id) {
-                                                            return <option value={chilItem.cateId}>--{chilItem.cateName}</option>;
-                                                        }
-                                                        return null;
-                                                    }))
-                                                }
-                                            </>
-                                        )
-                                    }
-                                    return null;
-                                }))}
-                            </Form.Select>
-                            <Form.Control.Feedback type="invalid">
-                                {hasErrorPut("category_id") ? validationPut.errors.category_id?.[0] : null}
-                            </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group controlId="formBasicTurnOn">
-                            <div className="mb-3">
-                                <Form.Check
-                                    inline
-                                    value={true}
-                                    label="On"
-                                    onChange={hanldeChangePut}                   
-                                    name="proTurnOn"
-                                    type="radio"
-                                    defaultChecked ={props.pro.proTurnOn === true?true:false}
-                                />
-                                <Form.Check
-                                    inline
-                                    value={false}
-                                    label="Off"
-                                    onChange={hanldeChangePut}
-                                    defaultChecked ={props.pro.proTurnOn === false?true:false}
-                                    name="proTurnOn"
-                                    type="radio"
-                                />
-                            </div>
-                        </Form.Group>
-                    </Form>
+                <Form>
+                    <Form.Group className="mb-3" controlId="formBasicProName">
+                        <Form.Label>Product name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            defaultValue={props.pro.proName}
+                            placeholder="Enter Product name"
+                            name="proName"
+                            onChange={hanldeChangePut}
+                            isInvalid={hasErrorPut("proName")}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {hasErrorPut("proName") ? validationPut.errors.proName?.[0] : null}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="formBasicProPrice">
+                        <Form.Label>Product price</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter Product price"
+                            name="proPrice"
+                            defaultValue={props.pro.proPrice}
+                            onChange={hanldeChangePut}
+                            isInvalid={hasErrorPut("proPrice")}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {hasErrorPut("proPrice") ? validationPut.errors.proPrice?.[0] : null}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group controlId="formBasicProImg" className="mb-3">
+                        <Form.Label>Choose Product image</Form.Label>
+                        <Form.Control type="file"
+                            accept="image/*"
+                            name='featureImgPath'
+                            onChange={handleChangeImageUpdate}
+                            isInvalid={hasErrorPut("featureImgPath")}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {hasErrorPut("featureImgPath") ? validationPut.errors.featureImgPath?.[0] : null}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="formBasicProContent">
+                        <Form.Label>Product Content</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter Product Content"
+                            name="proContent"
+                            defaultValue={props.pro.proContent}
+                            as="textarea"
+                            onChange={hanldeChangePut}
+                            isInvalid={hasErrorPut("proContent")}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {hasErrorPut("proContent") ? validationPut.errors.proContent?.[0] : null}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="formBasicProBrand">
+                        <Form.Label>Product Brand</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter Product Brand"
+                            name="proBrand"
+                            defaultValue={props.pro.proBrand}
+                            onChange={hanldeChangePut}
+                            isInvalid={hasErrorPut("proBrand")}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            {hasErrorPut("proBrand") ? validationPut.errors.proBrand?.[0] : null}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="formBasicProBrand">
+                        <Form.Label>Category</Form.Label>
+                        <Form.Select
+                            name="category_id"
+                            isInvalid={hasErrorPut("category_id")}
+                            onChange={hanldeSelectPut}
+                            defaultValue={props.pro.category_id}
+                        >
+                            <option value={0} >Not selected</option>
+                            {React.Children.toArray(dataListCate.map((item) => {
+                                let id = 0;
+                                if (item.cateIdParent === 0) {
+                                    id = item.cateId;
+                                    return (
+                                        <>
+                                            <option value={item.cateId}>{item.cateName}</option>
+                                            {
+                                                React.Children.toArray(dataListCate.map((chilItem) => {
+                                                    if (chilItem.cateIdParent === id) {
+                                                        return <option value={chilItem.cateId}>--{chilItem.cateName}</option>;
+                                                    }
+                                                    return null;
+                                                }))
+                                            }
+                                        </>
+                                    )
+                                }
+                                return null;
+                            }))}
+                        </Form.Select>
+                        <Form.Control.Feedback type="invalid">
+                            {hasErrorPut("category_id") ? validationPut.errors.category_id?.[0] : null}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                </Form>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.onHide}>
